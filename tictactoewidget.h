@@ -12,6 +12,8 @@ struct MetaData
   static constexpr int ROWS = 3;
   static constexpr int COLUMNS = 3;
   static constexpr const char *spaceCharacter = " ";
+  static constexpr const char *player1Symbol = "X";
+  static constexpr const char *player2Symbol = "O";
 };
 
 /// \brief An enum to represent the player.
