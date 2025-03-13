@@ -1,4 +1,5 @@
 #include "tictactoewidget.h"
+#include <QDebug>
 
 TicTacToeWidget::TicTacToeWidget(QWidget *parent) : QWidget(parent)
 {
@@ -49,6 +50,18 @@ void TicTacToeWidget::handleClicksOnBoard(int buttonIndex)
     button->setDisabled(true);
     setCurrentPlayer(Player::Player1);
   }
+
+  Winner winner = determineWinner(symbol, buttonIndex);
+  if (winner == Winner::NoWinnerYet)
+  {
+  }
+  else
+  {
+    if (winner == Winner::WinnerPlayer1)
+    {
+      qDebug() << "Player 1 Wins";
+    }
+  }
 }
 
 void TicTacToeWidget::createBoard()
@@ -78,4 +91,66 @@ void TicTacToeWidget::createBoard()
   }
 }
 
-Winner TicTacToeWidget::determineWinner(const QString &, int) {}
+Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
+{
+  // step 1: get the row number and column number of the clicker button
+  int rowNumber = buttonIndex / MetaData::COLUMNS;
+  int columnNumber = buttonIndex % MetaData::COLUMNS;
+
+  // counting variable
+  int counter = 0;
+
+  // horizontal check
+  //  forward check
+  int newColumn = columnNumber;
+  bool validateSecondCheck = true;
+  while (++newColumn < MetaData::COLUMNS)
+  {
+    // position of next button
+    int newPosition = rowNumber * MetaData::COLUMNS + newColumn;
+    // retrieve next button
+    QPushButton *button = m_Board.at(newPosition);
+    // check if the next button does not have the desired symbol
+    if (button->text() != symbol)
+    {
+      validateSecondCheck = false;
+      break;
+    }
+    else
+    {
+      // count the symbol on next button
+      ++counter;
+    }
+  }
+  // horizontal check;  backward check
+  newColumn = columnNumber;
+  while (validateSecondCheck && --newColumn >= 0)
+  {
+    // position of the next button in the board
+    int newPosition = rowNumber * MetaData::COLUMNS + newColumn;
+    // retrieve the next button
+    QPushButton *button = m_Board.at(newPosition);
+    // Check if the next button does not have the desired symbol
+    if (button->text() != symbol)
+    {
+      break;
+    }
+    else
+    {
+      // coutn the symbol on the next button
+      ++counter;
+    }
+  }
+  if (++counter == MetaData::COLUMNS)
+  {
+    if (symbol == "X")
+    {
+      return Winner::WinnerPlayer1;
+    }
+    else if (symbol == "O")
+    {
+      return Winner::WinnerPlayer2;
+    }
+  }
+  return Winner::NoWinnerYet;
+}
