@@ -1,9 +1,11 @@
 #include "tictactoewidget.h"
 #include <QDebug>
+#include <QLabel>
 
 TicTacToeWidget::TicTacToeWidget(QWidget *parent) : QWidget(parent)
 {
   m_Player = Player::Player1;
+  m_Winner = Winner::NoWinnerYet;
   createBoard();
 }
 
@@ -38,19 +40,23 @@ void TicTacToeWidget::handleClicksOnBoard(int buttonIndex)
   {
     symbol = MetaData::player1Symbol;
     button->setText(symbol);
-    button->setStyleSheet("QPushButton{color: blue; background: lightyellow;}");
+    button->setStyleSheet(QString("QPushButton{color: ") +
+                          MetaData::player1Colour +
+                          "; background: lightyellow;}");
     button->setDisabled(true);
   }
   else if (m_Player == Player::Player2)
   {
     symbol = MetaData::player2Symbol;
     button->setText(symbol);
-    button->setStyleSheet("QPushButton{color: red; background: lightgreen;}");
+    button->setStyleSheet(QString("QPushButton{color: ") +
+                          MetaData::player2Colour +
+                          "; background: lightgreen;}");
     button->setDisabled(true);
   }
 
-  Winner winner = determineWinner(symbol, buttonIndex);
-  if (winner == Winner::NoWinnerYet)
+  m_Winner = determineWinner(symbol, buttonIndex);
+  if (m_Winner == Winner::NoWinnerYet)
   {
     if (m_Player == Player::Player1)
     {
@@ -64,10 +70,10 @@ void TicTacToeWidget::handleClicksOnBoard(int buttonIndex)
   else
   {
     this->setDisabled(true);
-    if (winner == Winner::WinnerPlayer1)
-    {
-      qDebug() << "Player 1 Wins";
-    }
+    QTimer::singleShot(MetaData::FREEZETIME, this, SIGNAL(finishGame()));
+
+    connect(this, &TicTacToeWidget::finishGame, this,
+            &TicTacToeWidget::handleEndOfGame);
   }
 }
 
@@ -162,5 +168,276 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
   }
 
   // vertical check: upward and backward
-  return Winner::NoWinnerYet;
+  counter = 0;
+  validateSecondCheck = true;
+  int newRow = rowNumber;
+
+  // upward check
+  while (--newRow >= 0)
+  {
+    // get the position index of the next position in the upward direction
+    int newPositionIndex = newRow * MetaData::COLUMNS + columnNumber;
+    // retrieve the button on which the player made his move
+    QPushButton *button = m_Board.at(newPositionIndex);
+    if (button->text() != symbol)
+    {
+      validateSecondCheck = false;
+      break;
+    }
+    else
+    {
+      ++counter;
+    }
+  }
+
+  // downward check
+  newRow = rowNumber;
+  while (validateSecondCheck && ++newRow < MetaData::ROWS)
+  {
+    // get the position index of the next position in the downward direction
+    int newPositionIndex = newRow * MetaData::COLUMNS + columnNumber;
+    // retrieve the button on which the player made his move
+    QPushButton *button = m_Board.at(newPositionIndex);
+    if (button->text() != symbol)
+    {
+      validateSecondCheck = false;
+      break;
+    }
+    else
+    {
+      ++counter;
+    }
+  }
+
+  // did the player win vertically?
+  if (++counter == MetaData::ROWS)
+  {
+    if (symbol == MetaData::player1Symbol)
+    {
+      return Winner::WinnerPlayer1;
+    }
+    else if (symbol == MetaData::player2Symbol)
+    {
+      return Winner::WinnerPlayer2;
+    }
+  }
+
+  // backlash diagonal check
+  // upward direction
+  counter = 0;
+  validateSecondCheck = true;
+  // row and column for the next position in the diagonal
+  newRow = rowNumber;
+  newColumn = columnNumber;
+  while (--newRow >= 0 && --newColumn >= 0)
+  // get the position index of the next position
+  {
+    int newPositionIndex = newRow * MetaData::COLUMNS + newColumn;
+    // retireve the button at the new position
+    QPushButton *button = m_Board.at(newPositionIndex);
+    if (button->text() != symbol)
+    {
+      validateSecondCheck = false;
+      break;
+    }
+    else
+    {
+      ++counter;
+    }
+  }
+
+  // downward check
+  newRow = rowNumber;
+  newColumn = columnNumber;
+
+  while (validateSecondCheck && ++newRow < MetaData::ROWS &&
+         ++newColumn < MetaData::COLUMNS)
+  // get the position index of the next position
+  {
+    int newPositionIndex = newRow * MetaData::COLUMNS + newColumn;
+    // retireve the button at the new position
+    QPushButton *button = m_Board.at(newPositionIndex);
+    if (button->text() != symbol)
+    {
+      break;
+    }
+    else
+    {
+      ++counter;
+    }
+  }
+
+  // did the player win diagonally? (backlash direction)
+  if (++counter == MetaData::ROWSCOLUMNS)
+  {
+    if (symbol == MetaData::player1Symbol)
+    {
+      return Winner::WinnerPlayer1;
+    }
+    else if (symbol == MetaData::player2Symbol)
+    {
+      return Winner::WinnerPlayer2;
+    }
+  }
+
+  // forward slash diagonal check
+  // upward direction
+  counter = 0;
+  validateSecondCheck = true;
+  newRow = rowNumber;
+  newColumn = columnNumber;
+  while (--newRow >= 0 && ++newColumn < MetaData::ROWSCOLUMNS)
+  {
+    // index position of the next position
+    int newPositionIndex = newRow * MetaData::ROWSCOLUMNS + newColumn;
+    // retrieve the button at the next position
+    QPushButton *button = m_Board.at(newPositionIndex);
+    if (button->text() != symbol)
+    {
+      validateSecondCheck = false;
+      break; // stop the upward check
+    }
+    else
+    {
+      ++counter;
+    }
+  }
+
+  // downward direction
+  newRow = rowNumber;
+  newColumn = columnNumber;
+  while (validateSecondCheck && ++newRow < MetaData::ROWSCOLUMNS &&
+         --newColumn >= 0)
+  {
+    // index position of the next position
+    int newPositionIndex = newRow * MetaData::ROWSCOLUMNS + newColumn;
+    // retrieve the button at the next position
+    QPushButton *button = m_Board.at(newPositionIndex);
+    if (button->text() != symbol)
+    {
+      break;
+    }
+    else
+    {
+      ++counter;
+    }
+  }
+
+  // did the player win diagonally? (forwar slash)
+  if (++counter == MetaData::ROWSCOLUMNS)
+  {
+    if (symbol == MetaData::player1Symbol)
+    {
+      return Winner::WinnerPlayer1;
+    }
+    else if (symbol == MetaData::player2Symbol)
+    {
+      return Winner::WinnerPlayer2;
+    }
+  }
+
+  // chekc for the draw
+  for (int i = 0; i < MetaData::BOARDSIZE; i++)
+  {
+    if (m_Board.at(i)->text() == MetaData::spaceCharacter)
+    {
+      return Winner::NoWinnerYet;
+    }
+  }
+  return Winner::Draw;
+}
+
+void TicTacToeWidget::handleEndOfGame()
+{
+  // Emptying of the tictactoe window
+  // Retireve Layout
+  QLayout *layout = this->layout();
+  // Place holder layout item
+  QLayoutItem *layoutItem = nullptr;
+  // Retrieve the layout items, delete their widget and then delete the layout
+  // items 0 1 2 3 4 1 2 3 4 => 0 1 2 3 1 2 3 => 0 1 2
+  while (layout != nullptr && (layoutItem = layout->takeAt(0)) != nullptr)
+  {
+    // delete the widget of the layout item
+    delete layoutItem->widget();
+    // delete the layout item
+    delete layoutItem;
+  }
+  // delete the layout
+  delete layout;
+  // clear the board
+  m_Board.clear();
+
+  // creation of the layout for the window to display the outcome of the game
+  QVBoxLayout *verticalLayout = new QVBoxLayout(this);
+  verticalLayout->setAlignment(Qt::AlignCenter);
+
+  // label and restar button
+  QLabel *restartLabel = new QLabel(this);
+  QPushButton *restartButton = new QPushButton("restart", this);
+
+  QString restartLabelColour;
+  QString restartButtonColour;
+  if (m_Winner == Winner::WinnerPlayer1)
+  {
+    restartLabelColour =
+        QString(" QLabel{color : ") + MetaData::player1Colour + ";}";
+    restartButtonColour =
+        QString(" QPushButton{color : ") + MetaData::player1Colour + ";}";
+  }
+  else if (m_Winner == Winner::WinnerPlayer2)
+  {
+    restartLabelColour =
+        QString(" QLabel{color : ") + MetaData::player2Colour + ";}";
+    restartButtonColour =
+        QString(" QPushButton{color : ") + MetaData::player2Colour + ";}";
+  }
+  else if (m_Winner == Winner::Draw)
+  {
+    restartLabelColour =
+        QString(" QLabel{color : ") + MetaData::drawColour + ";}";
+    restartButtonColour =
+        QString(" QPushButton{color : ") + MetaData::drawColour + ";}";
+  }
+
+  // style the button
+  restartButton->setMinimumHeight(40);
+  restartButton->setMinimumWidth(100);
+  restartButton->setFont(QFont("Liberation Serif", 14, QFont::Bold));
+  restartButton->setStyleSheet(restartButtonColour);
+  // style the label
+  restartLabel->setFont(QFont("Liberation Serif", 14, QFont::Bold));
+  restartLabel->setStyleSheet(restartLabelColour);
+  restartLabel->setText("Temporary Text");
+  // organiza the widgets in the layout
+  verticalLayout->addWidget(restartLabel);
+  verticalLayout->addWidget(restartButton);
+
+  // Enable the TicTacToe window
+  this->setEnabled(true);
+  connect(restartButton, &QPushButton::clicked, this,
+          &TicTacToeWidget::restartGame);
+}
+
+void TicTacToeWidget::restartGame()
+{
+  // set the first player to start playing
+  m_Player = Player::Player1;
+
+  // empty the tictactoe widget if necessary
+  QLayout *layout = this->layout();
+  QLayoutItem *layoutItem = nullptr;
+
+  while (layout != nullptr && (layoutItem = layout->takeAt(0)) != nullptr)
+  {
+    delete layoutItem->widget();
+    delete layoutItem;
+  }
+
+  delete layout;
+  m_Board.clear();
+
+  // create a new board
+  createBoard();
+  this->setEnabled(true);
 }
