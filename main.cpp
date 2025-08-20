@@ -12,8 +12,10 @@ int main(int argc, char *argv[])
   w.show();
   */
 
-  GameConfiguration gameConfiguration;
-  gameConfiguration.show();
-
-  return a.exec();
+  GameConfiguration *gameConfiguration = GameConfiguration::getInstance();
+  gameConfiguration->show();
+  gameConfiguration->setGameSide(5);
+  int ret = a.exec();
+  delete gameConfiguration;
+  return ret;
 }

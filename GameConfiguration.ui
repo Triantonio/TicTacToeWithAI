@@ -232,5 +232,21 @@ background-color: rgb(255, 255, 255);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>spinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>horizontalSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>196</x>
+     <y>140</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>140</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>
