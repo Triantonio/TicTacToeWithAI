@@ -10,11 +10,13 @@ CONFIG += c++17
 
 SOURCES += \
     GameConfiguration.cpp \
+    MainWindow.cpp \
     main.cpp \
     tictactoewidget.cpp
 
 HEADERS += \
     GameConfiguration.hpp \
+    MainWindow.hpp \
     tictactoewidget.h
 
 # Default rules for deployment.
@@ -23,4 +25,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 FORMS += \
-    GameConfiguration.ui
+    GameConfiguration.ui \
+    MainWindow.ui
+
+RESOURCES += \
+    resources.qrc

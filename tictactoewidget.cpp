@@ -5,14 +5,13 @@
 TicTacToeWidget::TicTacToeWidget(QWidget *parent)
     : QWidget(parent), m_Player(Player::Player1), m_Winner(Winner::NoWinnerYet)
 {
-  createBoard();
 }
 
 TicTacToeWidget::~TicTacToeWidget() {}
 
 void TicTacToeWidget::resetBoard()
 {
-  for (int i = 0; i < MetaData::ROWS * MetaData::COLUMNS; ++i)
+  for (int i = 0; i < m_GameSide * m_GameSide; ++i)
   {
     m_Board.at(i)->setText(MetaData::spaceCharacter);
   }
@@ -20,7 +19,7 @@ void TicTacToeWidget::resetBoard()
 
 void TicTacToeWidget::setCurrentPlayer(Player player) { m_Player = player; }
 
-Player TicTacToeWidget::getPlayer() const { return m_Player; }
+Player TicTacToeWidget::getCurrentPlayer() const { return m_Player; }
 
 void TicTacToeWidget::handleClicksOnBoard(int buttonIndex)
 {
@@ -60,10 +59,12 @@ void TicTacToeWidget::handleClicksOnBoard(int buttonIndex)
     if (m_Player == Player::Player1)
     {
       setCurrentPlayer(Player::Player2);
+      emit changePlayer();
     }
     else if (m_Player == Player::Player2)
     {
       setCurrentPlayer(Player::Player1);
+      emit changePlayer();
     }
   }
   else
@@ -82,9 +83,9 @@ void TicTacToeWidget::createBoard()
 
   QSignalMapper *mapper = new QSignalMapper(this);
 
-  for (int row = 0; row < MetaData::ROWS; ++row)
+  for (int row = 0; row < m_GameSide; ++row)
   {
-    for (int column = 0; column < MetaData::COLUMNS; ++column)
+    for (int column = 0; column < m_GameSide; ++column)
     {
       QPushButton *button = new QPushButton(this);
 
@@ -106,8 +107,8 @@ void TicTacToeWidget::createBoard()
 Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
 {
   // step 1: get the row number and column number of the clicker button
-  int rowNumber = buttonIndex / MetaData::COLUMNS;
-  int columnNumber = buttonIndex % MetaData::COLUMNS;
+  int rowNumber = buttonIndex / m_GameSide;
+  int columnNumber = buttonIndex % m_GameSide;
 
   // counting variable
   int counter = 0;
@@ -116,10 +117,10 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
   //  forward check
   int newColumn = columnNumber;
   bool validateSecondCheck = true;
-  while (++newColumn < MetaData::COLUMNS)
+  while (++newColumn < m_GameSide)
   {
     // position of next button
-    int newPosition = rowNumber * MetaData::COLUMNS + newColumn;
+    int newPosition = rowNumber * m_GameSide + newColumn;
     // retrieve next button
     QPushButton *button = m_Board.at(newPosition);
     // check if the next button does not have the desired symbol
@@ -139,7 +140,7 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
   while (validateSecondCheck && --newColumn >= 0)
   {
     // position of the next button in the board
-    int newPosition = rowNumber * MetaData::COLUMNS + newColumn;
+    int newPosition = rowNumber * m_GameSide + newColumn;
     // retrieve the next button
     QPushButton *button = m_Board.at(newPosition);
     // Check if the next button does not have the desired symbol
@@ -154,7 +155,7 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
     }
   }
 
-  if (++counter == MetaData::COLUMNS)
+  if (++counter == m_GameSide)
   {
     if (symbol == MetaData::player1Symbol)
     {
@@ -175,7 +176,7 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
   while (--newRow >= 0)
   {
     // get the position index of the next position in the upward direction
-    int newPositionIndex = newRow * MetaData::COLUMNS + columnNumber;
+    int newPositionIndex = newRow * m_GameSide + columnNumber;
     // retrieve the button on which the player made his move
     QPushButton *button = m_Board.at(newPositionIndex);
     if (button->text() != symbol)
@@ -191,10 +192,10 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
 
   // downward check
   newRow = rowNumber;
-  while (validateSecondCheck && ++newRow < MetaData::ROWS)
+  while (validateSecondCheck && ++newRow < m_GameSide)
   {
     // get the position index of the next position in the downward direction
-    int newPositionIndex = newRow * MetaData::COLUMNS + columnNumber;
+    int newPositionIndex = newRow * m_GameSide + columnNumber;
     // retrieve the button on which the player made his move
     QPushButton *button = m_Board.at(newPositionIndex);
     if (button->text() != symbol)
@@ -209,7 +210,7 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
   }
 
   // did the player win vertically?
-  if (++counter == MetaData::ROWS)
+  if (++counter == m_GameSide)
   {
     if (symbol == MetaData::player1Symbol)
     {
@@ -231,7 +232,7 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
   while (--newRow >= 0 && --newColumn >= 0)
   // get the position index of the next position
   {
-    int newPositionIndex = newRow * MetaData::COLUMNS + newColumn;
+    int newPositionIndex = newRow * m_GameSide + newColumn;
     // retireve the button at the new position
     QPushButton *button = m_Board.at(newPositionIndex);
     if (button->text() != symbol)
@@ -249,11 +250,11 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
   newRow = rowNumber;
   newColumn = columnNumber;
 
-  while (validateSecondCheck && ++newRow < MetaData::ROWS &&
-         ++newColumn < MetaData::COLUMNS)
+  while (validateSecondCheck && ++newRow < m_GameSide &&
+         ++newColumn < m_GameSide)
   // get the position index of the next position
   {
-    int newPositionIndex = newRow * MetaData::COLUMNS + newColumn;
+    int newPositionIndex = newRow * m_GameSide + newColumn;
     // retireve the button at the new position
     QPushButton *button = m_Board.at(newPositionIndex);
     if (button->text() != symbol)
@@ -267,7 +268,7 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
   }
 
   // did the player win diagonally? (backlash direction)
-  if (++counter == MetaData::ROWSCOLUMNS)
+  if (++counter == m_GameSide)
   {
     if (symbol == MetaData::player1Symbol)
     {
@@ -285,10 +286,10 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
   validateSecondCheck = true;
   newRow = rowNumber;
   newColumn = columnNumber;
-  while (--newRow >= 0 && ++newColumn < MetaData::ROWSCOLUMNS)
+  while (--newRow >= 0 && ++newColumn < m_GameSide)
   {
     // index position of the next position
-    int newPositionIndex = newRow * MetaData::ROWSCOLUMNS + newColumn;
+    int newPositionIndex = newRow * m_GameSide + newColumn;
     // retrieve the button at the next position
     QPushButton *button = m_Board.at(newPositionIndex);
     if (button->text() != symbol)
@@ -305,11 +306,10 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
   // downward direction
   newRow = rowNumber;
   newColumn = columnNumber;
-  while (validateSecondCheck && ++newRow < MetaData::ROWSCOLUMNS &&
-         --newColumn >= 0)
+  while (validateSecondCheck && ++newRow < m_GameSide && --newColumn >= 0)
   {
     // index position of the next position
-    int newPositionIndex = newRow * MetaData::ROWSCOLUMNS + newColumn;
+    int newPositionIndex = newRow * m_GameSide + newColumn;
     // retrieve the button at the next position
     QPushButton *button = m_Board.at(newPositionIndex);
     if (button->text() != symbol)
@@ -323,7 +323,7 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
   }
 
   // did the player win diagonally? (forwar slash)
-  if (++counter == MetaData::ROWSCOLUMNS)
+  if (++counter == m_GameSide)
   {
     if (symbol == MetaData::player1Symbol)
     {
@@ -336,7 +336,7 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
   }
 
   // chekc for the draw
-  for (int i = 0; i < MetaData::BOARDSIZE; i++)
+  for (int i = 0; i < m_GameSide * m_GameSide; i++)
   {
     if (m_Board.at(i)->text() == MetaData::spaceCharacter)
     {
@@ -344,6 +344,17 @@ Winner TicTacToeWidget::determineWinner(const QString &symbol, int buttonIndex)
     }
   }
   return Winner::Draw;
+}
+
+int TicTacToeWidget::getGameSide() const { return m_GameSide; }
+
+void TicTacToeWidget::setGameSide(int newGameSide) { m_GameSide = newGameSide; }
+
+Winner TicTacToeWidget::getGameOutcome() const { return m_Winner; }
+
+void TicTacToeWidget::setGameOutcomeMessage(const QString &message)
+{
+  m_GameOutcomeMessage = message;
 }
 
 void TicTacToeWidget::handleEndOfGame()
@@ -407,21 +418,27 @@ void TicTacToeWidget::handleEndOfGame()
   // style the label
   restartLabel->setFont(QFont("Liberation Serif", 14, QFont::Bold));
   restartLabel->setStyleSheet(restartLabelColour);
-  restartLabel->setText("Temporary Text");
-  // organiza the widgets in the layout
+  restartLabel->setText(m_GameOutcomeMessage);
+  // Adjust the size of the tictactow board for full display of long names.
+  this->setMinimumWidth(MetaData::endOfGameWidth);
+  //  organize the widgets in the layout
   verticalLayout->addWidget(restartLabel);
   verticalLayout->addWidget(restartButton);
 
   // Enable the TicTacToe window
   this->setEnabled(true);
   connect(restartButton, &QPushButton::clicked, this,
-          &TicTacToeWidget::restartGame);
+          &TicTacToeWidget::startOrRestartGame);
 }
 
-void TicTacToeWidget::restartGame()
+void TicTacToeWidget::startOrRestartGame()
 {
+  // Reset the width of the game board
+  this->setMinimumWidth(MetaData::widthFactor *
+                        (m_GameSide + MetaData::boardSpacing));
   // set the first player to start playing
   m_Player = Player::Player1;
+  emit changePlayer();
 
   // empty the tictactoe widget if necessary
   QLayout *layout = this->layout();

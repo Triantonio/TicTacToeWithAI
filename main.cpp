@@ -1,6 +1,6 @@
 #include "GameConfiguration.hpp"
+#include "MainWindow.hpp"
 #include "tictactoewidget.h"
-
 #include <QApplication>
 
 int main(int argc, char *argv[])
@@ -12,10 +12,14 @@ int main(int argc, char *argv[])
   w.show();
   */
 
+  /*
   GameConfiguration *gameConfiguration = GameConfiguration::getInstance();
   gameConfiguration->show();
   gameConfiguration->setGameSide(5);
   int ret = a.exec();
   delete gameConfiguration;
-  return ret;
+  */
+  MainWindow window;
+  window.show();
+  return a.exec();
 }

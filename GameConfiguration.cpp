@@ -1,4 +1,5 @@
 #include "GameConfiguration.hpp"
+#include "qdebug.h"
 #include "ui_GameConfiguration.h"
 #include <QPushButton>
 
@@ -13,10 +14,15 @@ GameConfiguration::GameConfiguration(QWidget *parent)
   m_Ui->spinBox->setRange(SideRange::minRange, SideRange::maxRange);
   m_Ui->horizontalSlider->setRange(SideRange::minRange, SideRange::maxRange);
 
+  m_Ui->twoPlayerModerRadioButton->setChecked(true);
+
   connect(m_Ui->player1LineEdit, &QLineEdit::textEdited, this,
           &GameConfiguration::updateOkButton);
   connect(m_Ui->player2LineEdit, &QLineEdit::textEdited, this,
           &GameConfiguration::updateOkButton);
+
+  connect(m_Ui->buttonBox, &QDialogButtonBox::clicked, this,
+          &GameConfiguration::setGame);
 
   connect(m_Ui->horizontalSlider, &QSlider::valueChanged, m_Ui->spinBox,
           &QSpinBox::setValue);
@@ -70,6 +76,18 @@ void GameConfiguration::setGameSide(int side) const
 
 int GameConfiguration::getGameSide() const { return m_Ui->spinBox->value(); }
 
+Mode GameConfiguration::getMode() const
+{
+  if (m_Ui->twoPlayerModerRadioButton->isChecked())
+  {
+    return TwoPlayer;
+  }
+  else if (m_Ui->aiModeRadioButton->isChecked())
+  {
+    return Ai;
+  }
+}
+
 // Initialization of the pointer to the single instance
 GameConfiguration *GameConfiguration::gameConfiguration = nullptr;
 
@@ -80,4 +98,19 @@ GameConfiguration *GameConfiguration::getInstance()
     gameConfiguration = new GameConfiguration;
   }
   return gameConfiguration;
+}
+
+void GameConfiguration::setGame(QAbstractButton *button)
+{
+  if (button == m_Ui->buttonBox->button(QDialogButtonBox::Ok))
+  {
+    if (m_Ui->twoPlayerModerRadioButton->isChecked())
+    {
+      qDebug() << "2 player mode";
+    }
+    else if (m_Ui->aiModeRadioButton->isChecked())
+    {
+      qDebug() << "AI player mode";
+    }
+  }
 }

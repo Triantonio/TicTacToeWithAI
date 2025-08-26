@@ -172,7 +172,7 @@ font: 700 12pt &quot;Magneto&quot;;</string>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QRadioButton" name="radioButton">
+     <widget class="QRadioButton" name="twoPlayerModerRadioButton">
       <property name="styleSheet">
        <string notr="true">color: rgb(170, 0, 255);
 font: 700 10pt &quot;Bodoni MT&quot;;
@@ -184,7 +184,7 @@ background-color: rgb(255, 255, 255);</string>
      </widget>
     </item>
     <item>
-     <widget class="QRadioButton" name="radioButton_2">
+     <widget class="QRadioButton" name="aiModeRadioButton">
       <property name="styleSheet">
        <string notr="true">color: rgb(85, 85, 255);
 font: 700 10pt &quot;Bodoni MT&quot;;

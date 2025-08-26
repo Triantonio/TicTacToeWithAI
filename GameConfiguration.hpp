@@ -1,6 +1,7 @@
 #ifndef GAMECONFIGURATION_HPP
 #define GAMECONFIGURATION_HPP
 
+#include "qabstractbutton.h"
 #include <QDialog>
 
 namespace Ui
@@ -8,15 +9,21 @@ namespace Ui
 class GameConfiguration;
 }
 
+struct SideRange
+{
+  static constexpr int minRange = 3;
+  static constexpr int maxRange = 10;
+};
+
+enum Mode
+{
+  TwoPlayer,
+  Ai
+};
+
 class GameConfiguration : public QDialog
 {
   Q_OBJECT
-
-  struct SideRange
-  {
-    static constexpr int minRange = 3;
-    static constexpr int maxRange = 10;
-  };
 
 private:
   explicit GameConfiguration(QWidget *parent = nullptr);
@@ -46,8 +53,11 @@ public:
   /// \param side
   void setGameSide(int side) const;
   /// \brief A function which returns the game side
-  /// \return
+  /// \return Returns the game side.
   int getGameSide() const;
+  /// \brief Returns the selected mode.
+  /// \return
+  Mode getMode() const;
 
   // singleton function
   /// \brief A function which returns the unique instance of the
@@ -57,6 +67,9 @@ public:
 private slots:
   /// \brief A function to update de Ok button of the configuration window.
   void updateOkButton();
+
+  /// \brief Starts or Cancel the game.
+  void setGame(QAbstractButton *button);
 
 private:
   Ui::GameConfiguration *m_Ui;
