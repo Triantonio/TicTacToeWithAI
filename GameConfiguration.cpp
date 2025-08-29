@@ -16,9 +16,9 @@ GameConfiguration::GameConfiguration(QWidget *parent)
 
   m_Ui->twoPlayerModerRadioButton->setChecked(true);
 
-  connect(m_Ui->player1LineEdit, &QLineEdit::textEdited, this,
+  connect(m_Ui->player1LineEdit, &QLineEdit::textChanged, this,
           &GameConfiguration::updateOkButton);
-  connect(m_Ui->player2LineEdit, &QLineEdit::textEdited, this,
+  connect(m_Ui->player2LineEdit, &QLineEdit::textChanged, this,
           &GameConfiguration::updateOkButton);
 
   connect(m_Ui->buttonBox, &QDialogButtonBox::clicked, this,
@@ -29,6 +29,12 @@ GameConfiguration::GameConfiguration(QWidget *parent)
   connect(m_Ui->spinBox,
           static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
           m_Ui->horizontalSlider, &QSlider::setValue);
+
+  connect(m_Ui->aiModeRadioButton, &QRadioButton::clicked, this,
+          &GameConfiguration::setAIMode);
+  connect(m_Ui->twoPlayerModerRadioButton, &QRadioButton::clicked, this,
+          &GameConfiguration::setTwoPlayerMode);
+
   // Another way of making the connect.
   // connect(m_Ui->spinBox, QOverload<int>::of(&QSpinBox::valueChanged), this,
   //     [this](int value) { m_Ui->horizontalSlider->setValue(value); });
@@ -76,6 +82,7 @@ void GameConfiguration::setGameSide(int side) const
 
 int GameConfiguration::getGameSide() const { return m_Ui->spinBox->value(); }
 
+/*
 Mode GameConfiguration::getMode() const
 {
   if (m_Ui->twoPlayerModerRadioButton->isChecked())
@@ -87,6 +94,7 @@ Mode GameConfiguration::getMode() const
     return Ai;
   }
 }
+*/
 
 // Initialization of the pointer to the single instance
 GameConfiguration *GameConfiguration::gameConfiguration = nullptr;
@@ -98,6 +106,13 @@ GameConfiguration *GameConfiguration::getInstance()
     gameConfiguration = new GameConfiguration;
   }
   return gameConfiguration;
+}
+
+void GameConfiguration::resetConfiguration()
+{
+  m_Ui->twoPlayerModerRadioButton->setChecked(true);
+  m_Ui->player2LineEdit->setEnabled(true);
+  m_Ui->player2LineEdit->setText("");
 }
 
 void GameConfiguration::setGame(QAbstractButton *button)
@@ -112,5 +127,20 @@ void GameConfiguration::setGame(QAbstractButton *button)
     {
       qDebug() << "AI player mode";
     }
+  }
+}
+
+void GameConfiguration::setAIMode()
+{
+  m_Ui->player2LineEdit->setText(SpecialData::aiName);
+  m_Ui->player2LineEdit->setDisabled(true);
+}
+
+void GameConfiguration::setTwoPlayerMode()
+{
+  if (m_Ui->player2LineEdit->text() == SpecialData::aiName)
+  {
+    m_Ui->player2LineEdit->setText(""); // TODO :replace with clear()
+    m_Ui->player2LineEdit->setEnabled(true);
   }
 }

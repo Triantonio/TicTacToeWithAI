@@ -21,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::determineGameOutcomeMessage);
   connect(m_Ui->actionQuitGame, &QAction::triggered, this,
           &MainWindow::quitGame);
+  connect(this, &MainWindow::startAiMode, m_Ui->tictactoe,
+          &TicTacToeWidget::setAiMode);
 
   boldCurrentPlayerName();
 }
@@ -36,11 +38,22 @@ void MainWindow::startNewGame()
   // Clear configuration fields
   m_GameConfiguration->setPlayer1Name("");
   m_GameConfiguration->setPlayer2Name("");
+  // reset configuration
+  m_GameConfiguration->resetConfiguration();
+  // Reset the mode to 2 player mode
+  m_Ui->tictactoe->setTwoPlayerMode();
+
   // If the user press "cancel", the new game is aborted.
   if (m_GameConfiguration->exec() == QDialog::Rejected)
   {
     // abortion
     return;
+  }
+  // check for Ai mode
+  if (m_GameConfiguration->getPlayer2Name() == SpecialData::aiName)
+  {
+    m_Ui->tictactoe->resetContainers();
+    emit startAiMode();
   }
 
   // configuration of player names

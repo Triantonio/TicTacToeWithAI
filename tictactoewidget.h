@@ -7,6 +7,8 @@
 #include <QSignalMapper>
 #include <QTimer>
 #include <QWidget>
+#include <stdlib.h>
+#include <time.h>
 
 struct MetaData
 {
@@ -20,6 +22,7 @@ struct MetaData
   static constexpr int endOfGameWidth = 500;
   static constexpr int widthFactor = 50;
   static constexpr int boardSpacing = 1;
+  static constexpr int aiDelayDuration = 1000;
 };
 
 /// \brief An enum to represent the player.
@@ -27,6 +30,12 @@ enum Player
 {
   Player1,
   Player2
+};
+
+enum Mode
+{
+  AiMode,
+  TwoPlayerMode
 };
 
 /// \brief An enum to represent the winner.
@@ -69,22 +78,42 @@ public:
   /// \brief a function to set the game outcome message
   /// \param message
   void setGameOutcomeMessage(const QString &message);
+  /// \brief Resets the containers
+  void resetContainers();
 
 signals:
   /// \brief A signal to signal the end of the game session.
   void finishGame();
   /// \brief A signal to signal that it is the turn of another player.
   void changePlayer();
+  /// \brief Transmits AI Moves
+  /// \param AI Move
+  void sendAiMoves(int move);
+  /// \brief Triggers AI.
+  void triggerAi();
+  /// \brief Triggers the start of ai move calculation
+  void startAiMoveCalculation();
 
 public slots:
   /// \brief A function to manage the restart of the game
   void startOrRestartGame();
+  /// \brief Sets the Ai Mode.
+  void setAiMode();
+  /// \brief Reset to the two player mode.
+  void setTwoPlayerMode();
 
 private slots:
   /// \brief A slot to handle clicks on the board.
   void handleClicksOnBoard(int);
   /// \brief A slot to hande the end of the game.
   void handleEndOfGame();
+  /// \brief Triggers Ai Move Calculation.
+  void triggerAiMoveCalculation();
+  /// \brief Computers AI move.
+  void calculateAiMove();
+  /// \brief A function that transmits the ai opponent move.
+  /// \param Ai Move
+  void transmitAiMove(int move);
 
 private:
   /// \brief A function which creates the board of the tictactoegame
@@ -102,5 +131,13 @@ private:
   int m_GameSide;
   /// \brief An attribute to store the game outcome message
   QString m_GameOutcomeMessage;
+  /// \brief Mode Attribute
+  Mode m_Mode;
+  /// \brief A container to store the moves of player 1
+  QList<int> m_Player1Moves;
+  /// \brief A variable to store the last move of player 1
+  int m_Player1LastMove;
+  /// \brief A container to store the moves of the AI opponent
+  QList<int> m_AiOpponentMoves;
 };
 #endif // TICTACTOEWIDGET_H

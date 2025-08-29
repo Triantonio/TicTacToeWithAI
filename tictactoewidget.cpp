@@ -3,8 +3,17 @@
 #include <QLabel>
 
 TicTacToeWidget::TicTacToeWidget(QWidget *parent)
-    : QWidget(parent), m_Player(Player::Player1), m_Winner(Winner::NoWinnerYet)
+    : QWidget(parent), m_Player(Player::Player1), m_Winner(Winner::NoWinnerYet),
+      m_Mode(Mode::TwoPlayerMode)
 {
+  connect(this,
+          static_cast<void (TicTacToeWidget::*)(int)>(
+              &TicTacToeWidget::sendAiMoves),
+          this, &TicTacToeWidget::handleClicksOnBoard);
+  connect(this, &TicTacToeWidget::triggerAi, this,
+          &TicTacToeWidget::triggerAiMoveCalculation);
+  connect(this, &TicTacToeWidget::startAiMoveCalculation, this,
+          &TicTacToeWidget::calculateAiMove);
 }
 
 TicTacToeWidget::~TicTacToeWidget() {}
@@ -17,7 +26,14 @@ void TicTacToeWidget::resetBoard()
   }
 }
 
-void TicTacToeWidget::setCurrentPlayer(Player player) { m_Player = player; }
+void TicTacToeWidget::setCurrentPlayer(Player player)
+{
+  m_Player = player;
+  if (m_Mode == Mode::AiMode)
+  {
+    emit triggerAi();
+  }
+}
 
 Player TicTacToeWidget::getCurrentPlayer() const { return m_Player; }
 
@@ -36,6 +52,8 @@ void TicTacToeWidget::handleClicksOnBoard(int buttonIndex)
 
   if (m_Player == Player::Player1)
   {
+    // record the move of player 1
+    m_Player1LastMove = buttonIndex;
     symbol = MetaData::player1Symbol;
     button->setText(symbol);
     button->setStyleSheet(QString("QPushButton{color: ") +
@@ -357,6 +375,12 @@ void TicTacToeWidget::setGameOutcomeMessage(const QString &message)
   m_GameOutcomeMessage = message;
 }
 
+void TicTacToeWidget::resetContainers()
+{
+  m_Player1Moves.clear();
+  m_AiOpponentMoves.clear();
+}
+
 void TicTacToeWidget::handleEndOfGame()
 {
   // Emptying of the tictactoe window
@@ -439,6 +463,11 @@ void TicTacToeWidget::startOrRestartGame()
   // set the first player to start playing
   m_Player = Player::Player1;
   emit changePlayer();
+  // Reset the containers if it is the Ai mode
+  if (m_Mode == Mode::AiMode)
+  {
+    resetContainers();
+  }
 
   // empty the tictactoe widget if necessary
   QLayout *layout = this->layout();
@@ -457,3 +486,43 @@ void TicTacToeWidget::startOrRestartGame()
   createBoard();
   this->setEnabled(true);
 }
+
+void TicTacToeWidget::triggerAiMoveCalculation()
+{
+  if (m_Player == Player::Player2)
+  {
+    this->setDisabled(true);
+    QTimer::singleShot(MetaData::aiDelayDuration, this,
+                       SIGNAL(startAiMoveCalculation()));
+  }
+  else if (m_Player == Player::Player1)
+  {
+    this->setEnabled(true);
+  }
+}
+
+void TicTacToeWidget::calculateAiMove()
+{ // store the move of player 1
+  m_Player1Moves.push_back(m_Player1LastMove);
+  // generate a random number based on the board size
+  std::srand(time(NULL));
+  // A number between 0 and the board size
+  int randomNumber = rand() % (m_GameSide * m_GameSide);
+  // The number must indicate a free spot on the board
+  while (randomNumber >= m_GameSide * m_GameSide ||
+         m_Player1Moves.contains(randomNumber) ||
+         m_AiOpponentMoves.contains(randomNumber))
+  {
+    randomNumber = rand() % (m_GameSide * m_GameSide);
+  }
+  // store ai opponent move
+  m_AiOpponentMoves.push_back(randomNumber);
+  // transmit ai opponent move for handling
+  transmitAiMove(randomNumber);
+}
+
+void TicTacToeWidget::transmitAiMove(int move) { emit sendAiMoves(move); }
+
+void TicTacToeWidget::setAiMode() { m_Mode = Mode::AiMode; }
+
+void TicTacToeWidget::setTwoPlayerMode() { m_Mode = Mode::TwoPlayerMode; }

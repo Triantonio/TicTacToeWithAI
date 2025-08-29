@@ -15,11 +15,18 @@ struct SideRange
   static constexpr int maxRange = 10;
 };
 
+struct SpecialData
+{
+  static constexpr const char *aiName = "Mister AI";
+};
+
+/*
 enum Mode
 {
   TwoPlayer,
   Ai
 };
+*/
 
 class GameConfiguration : public QDialog
 {
@@ -55,14 +62,20 @@ public:
   /// \brief A function which returns the game side
   /// \return Returns the game side.
   int getGameSide() const;
+
+  /*
   /// \brief Returns the selected mode.
   /// \return
   Mode getMode() const;
+  */
 
   // singleton function
   /// \brief A function which returns the unique instance of the
   /// GameConfiguration class \return
   static GameConfiguration *getInstance();
+
+  /// \brief A function to reset AI configuration
+  void resetConfiguration();
 
 private slots:
   /// \brief A function to update de Ok button of the configuration window.
@@ -70,6 +83,12 @@ private slots:
 
   /// \brief Starts or Cancel the game.
   void setGame(QAbstractButton *button);
+
+  /// \brief This function sets the AI Mode.
+  void setAIMode();
+
+  /// \brief This function sets the Two Player Mode.
+  void setTwoPlayerMode();
 
 private:
   Ui::GameConfiguration *m_Ui;

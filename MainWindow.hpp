@@ -23,6 +23,10 @@ public:
   explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow() override;
 
+signals:
+  /// \brief Signal that triggers when starting the AI Mode
+  void startAiMode();
+
 private slots:
   /// \brief A function that manages the start of a new game.
   void startNewGame();
