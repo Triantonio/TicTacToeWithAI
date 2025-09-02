@@ -7,6 +7,7 @@
 #include <QSignalMapper>
 #include <QTimer>
 #include <QWidget>
+#include <memory>
 #include <stdlib.h>
 #include <time.h>
 
