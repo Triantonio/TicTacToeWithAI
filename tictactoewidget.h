@@ -1,8 +1,10 @@
 #ifndef TICTACTOEWIDGET_H
 #define TICTACTOEWIDGET_H
 
+#include <QAudioOutput>
 #include <QGridLayout>
 #include <QList>
+#include <QMediaPlayer>
 #include <QPushButton>
 #include <QSignalMapper>
 #include <QTimer>
@@ -140,5 +142,8 @@ private:
   int m_Player1LastMove;
   /// \brief A container to store the moves of the AI opponent
   QList<int> m_AiOpponentMoves;
+
+  QMediaPlayer *m_MediaPlayer;
+  QAudioOutput *m_AudioOutput;
 };
 #endif // TICTACTOEWIDGET_H
