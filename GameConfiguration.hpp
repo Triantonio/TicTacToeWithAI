@@ -18,6 +18,7 @@ struct SideRange
 struct SpecialData
 {
   static constexpr const char *aiName = "Mister AI";
+  static constexpr const char *aiEasyName = "Mister Easy AI";
 };
 
 /*
@@ -83,6 +84,9 @@ private slots:
 
   /// \brief Starts or Cancel the game.
   void setGame(QAbstractButton *button);
+
+  /// \brief This function sets the Easy AI Mode.
+  void setEasyAIMode();
 
   /// \brief This function sets the AI Mode.
   void setAIMode();

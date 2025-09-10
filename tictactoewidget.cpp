@@ -14,15 +14,19 @@ TicTacToeWidget::TicTacToeWidget(QWidget *parent)
           &TicTacToeWidget::triggerAiMoveCalculation);
   connect(this, &TicTacToeWidget::startAiMoveCalculation, this,
           &TicTacToeWidget::calculateAiMove);
+  connect(this, &TicTacToeWidget::triggerEasyAi, this,
+          &TicTacToeWidget::triggerEasyAiMoveCalculation);
+  connect(this, &TicTacToeWidget::startEasyAiMoveCalculation, this,
+          &TicTacToeWidget::calculateEasyAiMove);
 
   // Audio Settings
   // QT6 Version
   /*
-  m_MediaPlayer = new QMediaPlayer(this);
-  m_AudioOutput = new QAudioOutput();
-  m_MediaPlayer->setAudioOutput(m_AudioOutput);
-  m_AudioOutput->setVolume(50);
-  */
+m_MediaPlayer = new QMediaPlayer(this);
+m_AudioOutput = new QAudioOutput();
+m_MediaPlayer->setAudioOutput(m_AudioOutput);
+m_AudioOutput->setVolume(50);
+*/
   m_MediaPlayer = new QMediaPlayer(this);
   m_MediaPlayer->setVolume(50);
 }
@@ -43,6 +47,10 @@ void TicTacToeWidget::setCurrentPlayer(Player player)
   if (m_Mode == Mode::AiMode)
   {
     emit triggerAi();
+  }
+  else if (m_Mode == Mode::EasyAiMode)
+  {
+    emit triggerEasyAi();
   }
 }
 
@@ -504,7 +512,7 @@ void TicTacToeWidget::startOrRestartGame()
   m_Player = Player::Player1;
   emit changePlayer();
   // Reset the containers if it is the Ai mode
-  if (m_Mode == Mode::AiMode)
+  if (m_Mode == Mode::AiMode || m_Mode == Mode::EasyAiMode)
   {
     resetContainers();
   }
@@ -541,9 +549,23 @@ void TicTacToeWidget::triggerAiMoveCalculation()
   }
 }
 
-// TODO: Implement an Easy AI mode with this code.
-/*
-void TicTacToeWidget::calculateAiMove()
+void TicTacToeWidget::triggerEasyAiMoveCalculation()
+{
+  if (m_Player == Player::Player2)
+  {
+    this->setDisabled(true);
+    QTimer::singleShot(MetaData::aiDelayDuration, this,
+                       SIGNAL(startEasyAiMoveCalculation()));
+  }
+  else if (m_Player == Player::Player1)
+  {
+    this->setEnabled(true);
+  }
+}
+
+
+
+void TicTacToeWidget::calculateEasyAiMove()
 { // store the move of player 1
   m_Player1Moves.push_back(m_Player1LastMove);
   // generate a random number based on the board size
@@ -562,7 +584,6 @@ void TicTacToeWidget::calculateAiMove()
   // transmit ai opponent move for handling
   transmitAiMove(randomNumber);
 }
-*/
 
 void TicTacToeWidget::calculateAiMove()
 {
@@ -854,5 +875,7 @@ void TicTacToeWidget::calculateAiMove()
 void TicTacToeWidget::transmitAiMove(int move) { emit sendAiMoves(move); }
 
 void TicTacToeWidget::setAiMode() { m_Mode = Mode::AiMode; }
+
+void TicTacToeWidget::setEasyAiMode() { m_Mode = Mode::EasyAiMode; }
 
 void TicTacToeWidget::setTwoPlayerMode() { m_Mode = Mode::TwoPlayerMode; }

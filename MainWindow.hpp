@@ -26,6 +26,8 @@ public:
 signals:
   /// \brief Signal that triggers when starting the AI Mode
   void startAiMode();
+  /// \brief Signal that triggers when starting the Easy AI Mode
+  void startEasyAiMode();
 
 private slots:
   /// \brief A function that manages the start of a new game.

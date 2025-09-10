@@ -32,6 +32,8 @@ GameConfiguration::GameConfiguration(QWidget *parent)
 
   connect(m_Ui->aiModeRadioButton, &QRadioButton::clicked, this,
           &GameConfiguration::setAIMode);
+  connect(m_Ui->aiEasyModeRadioButton, &QRadioButton::clicked, this,
+          &GameConfiguration::setEasyAIMode);
   connect(m_Ui->twoPlayerModerRadioButton, &QRadioButton::clicked, this,
           &GameConfiguration::setTwoPlayerMode);
 
@@ -136,9 +138,16 @@ void GameConfiguration::setAIMode()
   m_Ui->player2LineEdit->setDisabled(true);
 }
 
+void GameConfiguration::setEasyAIMode()
+{
+  m_Ui->player2LineEdit->setText(SpecialData::aiEasyName);
+  m_Ui->player2LineEdit->setDisabled(true);
+}
+
 void GameConfiguration::setTwoPlayerMode()
 {
-  if (m_Ui->player2LineEdit->text() == SpecialData::aiName)
+  if (m_Ui->player2LineEdit->text() ==
+      (SpecialData::aiName || SpecialData::aiEasyName))
   {
     m_Ui->player2LineEdit->setText(""); // TODO :replace with clear()
     m_Ui->player2LineEdit->setEnabled(true);

@@ -38,7 +38,8 @@ enum Player
 enum Mode
 {
   AiMode,
-  TwoPlayerMode
+  TwoPlayerMode,
+  EasyAiMode
 };
 
 /// \brief An enum to represent the winner.
@@ -92,14 +93,20 @@ signals:
   /// \brief Transmits AI Moves
   /// \param AI Move
   void sendAiMoves(int move);
+  /// \brief Triggers Easy AI.
+  void triggerEasyAi();
   /// \brief Triggers AI.
   void triggerAi();
   /// \brief Triggers the start of ai move calculation
   void startAiMoveCalculation();
+  /// \brief Triggers the start of easy ai move calculation
+  void startEasyAiMoveCalculation();
 
 public slots:
   /// \brief A function to manage the restart of the game
   void startOrRestartGame();
+  /// \brief Sets the Easy Ai Mode.
+  void setEasyAiMode();
   /// \brief Sets the Ai Mode.
   void setAiMode();
   /// \brief Reset to the two player mode.
@@ -110,8 +117,12 @@ private slots:
   void handleClicksOnBoard(int);
   /// \brief A slot to hande the end of the game.
   void handleEndOfGame();
+  /// \brief Triggers Easy Ai Move Calculation.
+  void triggerEasyAiMoveCalculation();
   /// \brief Triggers Ai Move Calculation.
   void triggerAiMoveCalculation();
+  /// \brief Computers Easy AI move.
+  void calculateEasyAiMove();
   /// \brief Computers AI move.
   void calculateAiMove();
   /// \brief A function that transmits the ai opponent move.

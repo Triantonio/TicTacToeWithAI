@@ -23,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::quitGame);
   connect(this, &MainWindow::startAiMode, m_Ui->tictactoe,
           &TicTacToeWidget::setAiMode);
+  connect(this, &MainWindow::startEasyAiMode, m_Ui->tictactoe,
+          &TicTacToeWidget::setEasyAiMode);
 
   boldCurrentPlayerName();
 }
@@ -54,6 +56,11 @@ void MainWindow::startNewGame()
   {
     m_Ui->tictactoe->resetContainers();
     emit startAiMode();
+  }
+  else if (m_GameConfiguration->getPlayer2Name() == SpecialData::aiEasyName)
+  {
+    m_Ui->tictactoe->resetContainers();
+    emit startEasyAiMode();
   }
 
   // configuration of player names

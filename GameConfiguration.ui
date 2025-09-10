@@ -167,7 +167,7 @@ font: 700 12pt &quot;Magneto&quot;;</string>
      <x>30</x>
      <y>170</y>
      <width>151</width>
-     <height>61</height>
+     <height>74</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -184,6 +184,18 @@ background-color: rgb(255, 255, 255);</string>
      </widget>
     </item>
     <item>
+     <widget class="QRadioButton" name="aiEasyModeRadioButton">
+      <property name="styleSheet">
+       <string notr="true">color: rgb(181, 52, 255);
+font: 700 10pt &quot;Bodoni MT&quot;;
+background-color: rgb(255, 255, 255);</string>
+      </property>
+      <property name="text">
+       <string>AI Easy Mode</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QRadioButton" name="aiModeRadioButton">
       <property name="styleSheet">
        <string notr="true">color: rgb(85, 85, 255);
@@ -191,7 +203,7 @@ font: 700 10pt &quot;Bodoni MT&quot;;
 background-color: rgb(255, 255, 255);</string>
       </property>
       <property name="text">
-       <string>AI Mode</string>
+       <string>AI Hard Mode</string>
       </property>
      </widget>
     </item>
