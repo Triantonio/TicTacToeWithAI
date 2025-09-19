@@ -1,11 +1,10 @@
-#include "GameConfiguration.hpp"
 #include "MainWindow.hpp"
-#include "tictactoewidget.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
+  a.setWindowIcon(QIcon(":/image/Icon.ico"));
 
   /*
   TicTacToeWidget w;

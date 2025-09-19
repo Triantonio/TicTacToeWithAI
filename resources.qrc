@@ -7,5 +7,6 @@
         <file>sounds/Player2Move.mp3</file>
         <file>sounds/Player2Win.mp3</file>
         <file>sounds/Draw.mp3</file>
+        <file>image/Icon.ico</file>
     </qresource>
 </RCC>
