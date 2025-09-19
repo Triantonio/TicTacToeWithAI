@@ -55,6 +55,11 @@ add_executable(${PROJECT_NAME}
     ${RESOURCES}
 )
 
+# --- ExecutableIcon
+if (WIN32)
+    target_sources(${PROJECT_NAME} PRIVATE app_icon.rc)
+endif()
+
 # --- Link libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE ${QT_LIBS})
 
