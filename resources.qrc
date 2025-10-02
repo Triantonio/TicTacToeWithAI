@@ -8,5 +8,6 @@
         <file>sounds/Player2Win.mp3</file>
         <file>sounds/Draw.mp3</file>
         <file>image/Icon.ico</file>
+        <file>video/TitleIntro.wmv</file>
     </qresource>
 </RCC>
