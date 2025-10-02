@@ -15,14 +15,9 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-# --- Search for Qt (first Qt6, if not Qt5)
-find_package(Qt6 COMPONENTS Core Gui Widgets Multimedia QUIET)
-if (Qt6_FOUND)
-    set(QT_LIBS Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Multimedia)
-else()
-    find_package(Qt5 COMPONENTS Core Gui Widgets Multimedia REQUIRED)
-    set(QT_LIBS Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Multimedia)
-endif()
+# --- Search for Qt5
+find_package(Qt5 COMPONENTS Core Gui Widgets Multimedia MultimediaWidgets REQUIRED)
+set(QT_LIBS Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Multimedia Qt5::MultimediaWidgets)
 
 # --- Sources
 set(SOURCES
@@ -75,9 +70,7 @@ install(FILES resources/sound.wav DESTINATION resources)
 message(STATUS "Configuring ${PROJECT_NAME} with Qt libraries: ${QT_LIBS}")
 
 # --- Automatically locate windeployqt based on the Qt kit
-get_target_property(_qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
-get_filename_component(_qt5_bin_dir "${_qt5_qmake_location}" DIRECTORY)
-find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${_qt5_bin_dir}")
+find_program(WINDEPLOYQT_EXECUTABLE windeployqt)
 
 # --- Automatically copy Qt dependencies
 if(WIN32 AND WINDEPLOYQT_EXECUTABLE AND (CMAKE_BUILD_TYPE STREQUAL "Release"))

@@ -1,5 +1,6 @@
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
+#include <QFile>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), m_Ui(new Ui::MainWindow),
@@ -26,10 +27,29 @@ MainWindow::MainWindow(QWidget *parent)
   connect(this, &MainWindow::startEasyAiMode, m_Ui->tictactoe,
           &TicTacToeWidget::setEasyAiMode);
 
+  setMainTitleMedia();
+
   boldCurrentPlayerName();
 }
 
 MainWindow::~MainWindow() { delete m_Ui; }
+
+void MainWindow::setMainTitleMedia()
+{
+  QString path =
+      QCoreApplication::applicationDirPath() + "/../../video/TitleIntro.wmv";
+  if (!QFile::exists(path))
+  {
+    return;
+  }
+
+  m_MediaPlayer = new QMediaPlayer(this);
+  m_MediaPlayer->setVideoOutput(m_Ui->videoWidget);
+  m_MediaPlayer->setVolume(50);
+
+  m_MediaPlayer->setMedia(QUrl::fromLocalFile(path));
+  m_MediaPlayer->play();
+}
 
 void MainWindow::startNewGame()
 { // Reset the player names.
@@ -75,7 +95,7 @@ void MainWindow::startNewGame()
   m_Ui->tictactoe->setFixedWidth(Data::widthFactor *
                                  (gameSide + Data::boardSpacing));
   // Hide the game title
-  m_Ui->gameTitleLabel->setVisible(false);
+  m_Ui->videoWidget->setVisible(false);
   // Update the side of the game
   m_Ui->tictactoe->setGameSide(gameSide);
   // Launch the game

@@ -25,17 +25,13 @@
       </property>
      </widget>
     </item>
-    <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-     <widget class="QLabel" name="gameTitleLabel">
-      <property name="styleSheet">
-       <string notr="true">font: 600 30pt &quot;Lucida Bright&quot;;
-color: rgb(255, 85, 0);</string>
-      </property>
-      <property name="text">
-       <string>TICTACTOE GAME</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
+    <item>
+     <widget class="QVideoWidget" name="videoWidget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
      </widget>
     </item>
@@ -117,6 +113,12 @@ color: rgb(255, 85, 0);</string>
    <class>TicTacToeWidget</class>
    <extends>QWidget</extends>
    <header>tictactoewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QVideoWidget</class>
+   <extends>QWidget</extends>
+   <header>qvideowidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

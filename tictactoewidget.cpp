@@ -19,14 +19,6 @@ TicTacToeWidget::TicTacToeWidget(QWidget *parent)
   connect(this, &TicTacToeWidget::startEasyAiMoveCalculation, this,
           &TicTacToeWidget::calculateEasyAiMove);
 
-  // Audio Settings
-  // QT6 Version
-  /*
-m_MediaPlayer = new QMediaPlayer(this);
-m_AudioOutput = new QAudioOutput();
-m_MediaPlayer->setAudioOutput(m_AudioOutput);
-m_AudioOutput->setVolume(50);
-*/
   m_MediaPlayer = new QMediaPlayer(this);
   m_MediaPlayer->setVolume(50);
 }
@@ -562,8 +554,6 @@ void TicTacToeWidget::triggerEasyAiMoveCalculation()
     this->setEnabled(true);
   }
 }
-
-
 
 void TicTacToeWidget::calculateEasyAiMove()
 { // store the move of player 1

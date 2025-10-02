@@ -3,6 +3,8 @@
 
 #include "GameConfiguration.hpp"
 #include <QMainWindow>
+#include <QMediaPlayer>
+#include <QVideoWidget>
 
 struct Data
 {
@@ -43,9 +45,16 @@ private slots:
   void quitGame();
 
 private:
+  /// \brief Sets the Main Title video introduction.
+  void setMainTitleMedia();
+
   Ui::MainWindow *m_Ui;
 
   GameConfiguration *m_GameConfiguration;
+
+  /// \brief Main Title media player where the introductory video will
+  /// reproduce.
+  QMediaPlayer *m_MediaPlayer;
 };
 
 #endif // MAINWINDOW_HPP
