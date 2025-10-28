@@ -9,7 +9,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Sets the default installation directory within the project folder.
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/install" CACHE PATH "Default installation path")
 
-
 # --- Enable automoc, autouic, and autorcc (handle Q_OBJECT, .ui, and .qrc)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -19,41 +18,55 @@ set(CMAKE_AUTORCC ON)
 find_package(Qt5 COMPONENTS Core Gui Widgets Multimedia MultimediaWidgets REQUIRED)
 set(QT_LIBS Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Multimedia Qt5::MultimediaWidgets)
 
-# --- Sources
-set(SOURCES
-    GameConfiguration.cpp
-    MainWindow.cpp
-    main.cpp
-    tictactoewidget.cpp
+# --- Project sources
+set(PROJECT_SOURCES
+    src/GameConfiguration.cpp
+    src/MainWindow.cpp
+    src/main.cpp
+    src/tictactoewidget.cpp
 )
 
-set(HEADERS
-    GameConfiguration.hpp
-    MainWindow.hpp
-    tictactoewidget.h
+set(PROJECT_HEADERS
+    include/GameConfiguration.hpp
+    include/MainWindow.hpp
+    include/tictactoewidget.h
 )
 
-set(FORMS
-    GameConfiguration.ui
-    MainWindow.ui
+set(PROJECT_FORMS
+    resources/ui/GameConfiguration.ui
+    resources/ui/MainWindow.ui
 )
 
-set(RESOURCES
-    resources.qrc
+set(PROJECT_RESOURCES
+    resources/resources.qrc
 )
 
 # --- Executable
-add_executable(${PROJECT_NAME}
-    ${SOURCES}
-    ${HEADERS}
-    ${FORMS}
-    ${RESOURCES}
+add_executable(${PROJECT_NAME})
+
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        ${PROJECT_SOURCES}
+        ${PROJECT_HEADERS}
+        ${PROJECT_FORMS}
+        ${PROJECT_RESOURCES}
+)
+
+set_target_properties(${PROJECT_NAME}
+    PROPERTIES
+        AUTOUIC_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/resources/ui"
 )
 
 # --- ExecutableIcon
 if (WIN32)
-    target_sources(${PROJECT_NAME} PRIVATE app_icon.rc)
+    target_sources(${PROJECT_NAME} PRIVATE resources/app_icon.rc)
 endif()
+
+# --- Include directories
+target_include_directories(${PROJECT_NAME}
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
 # --- Link libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE ${QT_LIBS})
