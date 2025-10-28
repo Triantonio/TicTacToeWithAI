@@ -52,6 +52,11 @@ target_sources(${PROJECT_NAME}
         ${PROJECT_RESOURCES}
 )
 
+set_target_properties(${PROJECT_NAME}
+    PROPERTIES
+        AUTOUIC_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/resources/ui"
+)
+
 # --- ExecutableIcon
 if (WIN32)
     target_sources(${PROJECT_NAME} PRIVATE resources/app_icon.rc)
