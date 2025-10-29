@@ -65,6 +65,24 @@ to the executable when producing a **Release** build.
 - `doc/`: Doxygen configurations for generating API documentation.
 - `CHANGELOG.md`: project change log.
 
+## Git workflow
+
+To keep the project history organized, we follow a Gitflow-inspired branching
+model:
+
+- **Default branch:** all new work starts from `develop`. Create feature or fix
+  branches from it and open pull requests back into `develop` when the work is
+  ready for review.
+- **Protected `main`:** the `main` branch stays deployment-ready. It is
+  protected in GitHub so only merges coming from reviewed pull requests are
+  allowed, and Triantonio must approve every merge request before it is
+  completed.
+- **Promotion to production:** when the code in `develop` is stable, open a pull
+  request from `develop` into `main`, obtain the mandatory approval, and merge.
+  Optionally tag the merge commit to mark the release.
+
+![Gitflow branching model](https://nvie.com/img/git-model@2x.png)
+
 ## Generate documentation (optional)
 
 The `doc/doxygen` directory contains a ready-to-use `Doxyfile`. To produce the
