@@ -1,3 +1,6 @@
+/// @file GameConfiguration.cpp
+/// @brief Defines the logic for the game configuration dialog.
+
 #include "GameConfiguration.hpp"
 #include "qdebug.h"
 #include "ui_GameConfiguration.h"

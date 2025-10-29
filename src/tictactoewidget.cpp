@@ -1,3 +1,6 @@
+/// @file tictactoewidget.cpp
+/// @brief Implements the interactive Tic-Tac-Toe board widget.
+
 #include "tictactoewidget.h"
 #include <QDebug>
 #include <QLabel>

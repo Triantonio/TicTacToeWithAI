@@ -1,3 +1,6 @@
+/// @file MainWindow.cpp
+/// @brief Implements the main application window.
+
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
 #include <QFile>
