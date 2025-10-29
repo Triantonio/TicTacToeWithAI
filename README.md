@@ -94,6 +94,9 @@ produce a ready-to-use Windows build:
    installs Qt 5.15.2 with the modules required by the application (`qtbase`,
    `qtmultimedia`, and `qttools`). It also installs Ninja, the fast build tool
    used by CMake on Windows runners.
+   repository, and installs Qt 5.15.2 with the modules required by the
+   application (`qtbase`, `qtmultimedia`, and `qttools`). It also installs Ninja,
+   the fast build tool used by CMake on Windows runners.
 2. **Configure and build.** CMake configures the project in Release mode and
    compiles it, generating the `TicTacToeWithAI.exe` executable inside the
    temporary build directory.
