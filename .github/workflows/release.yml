@@ -1,0 +1,79 @@
+name: Build release binaries
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '5.15.2'
+          host: windows
+          target: desktop
+          arch: win64_msvc2019_64
+          modules: qtmultimedia qttools
+          setup-python: 'false'
+
+      - name: Install Ninja
+        shell: pwsh
+        run: choco install ninja --no-progress --yes
+
+      - name: Configure CMake
+        shell: pwsh
+        run: cmake -S . -B build -G "Ninja" -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        shell: pwsh
+        run: cmake --build build --config Release
+
+      - name: Install files
+        shell: pwsh
+        run: cmake --install build --config Release --prefix "$env:RUNNER_TEMP/install"
+
+      - name: Bundle Qt dependencies
+        shell: pwsh
+        run: |
+          $exe = Join-Path $env:RUNNER_TEMP 'install/bin/TicTacToeWithAI.exe'
+          if (-not (Test-Path $exe)) {
+            throw "Executable not found at $exe"
+          }
+          & windeployqt --no-compiler-runtime $exe
+
+      - name: Create archive
+        shell: pwsh
+        run: |
+          $packageDir = Join-Path $env:RUNNER_TEMP 'install'
+          $zipPath = Join-Path $env:GITHUB_WORKSPACE "TicTacToeWithAI-${{ github.ref_name }}-windows.zip"
+          Compress-Archive -Path "$packageDir\*" -DestinationPath $zipPath
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TicTacToeWithAI-${{ github.ref_name }}-windows
+          path: TicTacToeWithAI-${{ github.ref_name }}-windows.zip
+          if-no-files-found: error
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: TicTacToeWithAI-${{ github.ref_name }}-windows.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
