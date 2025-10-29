@@ -29,8 +29,7 @@ jobs:
           host: windows
           target: desktop
           arch: win64_msvc2019_64
-          modules: qtmultimedia qttools
-          setup-python: 'false'
+          setup-python: 'true'
 
       - name: Install Ninja
         shell: pwsh
