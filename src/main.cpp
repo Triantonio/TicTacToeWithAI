@@ -1,3 +1,6 @@
+/// @file main.cpp
+/// @brief Application entry point.
+
 #include "MainWindow.hpp"
 #include <QApplication>
 
