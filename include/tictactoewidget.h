@@ -1,6 +1,9 @@
 #ifndef TICTACTOEWIDGET_H
 #define TICTACTOEWIDGET_H
 
+/// @file tictactoewidget.h
+/// @brief Declares the TicTacToeWidget responsible for rendering the board.
+
 #include <QAudioOutput>
 #include <QGridLayout>
 #include <QList>
@@ -13,148 +16,155 @@
 #include <stdlib.h>
 #include <time.h>
 
+/// @struct MetaData
+/// @brief Stores constants used to configure gameplay and visuals.
 struct MetaData
 {
-  static constexpr int FREEZETIME = 1500;
-  static constexpr const char *spaceCharacter = " ";
-  static constexpr const char *player1Symbol = "X";
-  static constexpr const char *player2Symbol = "O";
-  static constexpr const char *player1Colour = "blue";
-  static constexpr const char *player2Colour = "red";
-  static constexpr const char *drawColour = "purple";
-  static constexpr int endOfGameWidth = 500;
-  static constexpr int widthFactor = 50;
-  static constexpr int boardSpacing = 1;
-  static constexpr int aiDelayDuration = 1000;
+  static constexpr int FREEZETIME = 1500;              ///< Pause duration between games.
+  static constexpr const char *spaceCharacter = " ";  ///< Placeholder symbol.
+  static constexpr const char *player1Symbol = "X";    ///< Player 1 board symbol.
+  static constexpr const char *player2Symbol = "O";    ///< Player 2 board symbol.
+  static constexpr const char *player1Colour = "blue"; ///< Player 1 highlight color.
+  static constexpr const char *player2Colour = "red";  ///< Player 2 highlight color.
+  static constexpr const char *drawColour = "purple";  ///< Draw highlight color.
+  static constexpr int endOfGameWidth = 500;           ///< Width of the end game dialog.
+  static constexpr int widthFactor = 50;               ///< Button width scaling factor.
+  static constexpr int boardSpacing = 1;               ///< Spacing between board tiles.
+  static constexpr int aiDelayDuration = 1000;         ///< Delay before AI performs a move.
 };
 
-/// \brief An enum to represent the player.
+/// @enum Player
+/// @brief Identifies the player that should perform the next move.
 enum Player
 {
-  Player1,
-  Player2
+  Player1, ///< Player one.
+  Player2  ///< Player two.
 };
 
+/// @enum Mode
+/// @brief Represents the game mode in which the widget operates.
 enum Mode
 {
-  AiMode,
-  TwoPlayerMode,
-  EasyAiMode
+  AiMode,      ///< Standard AI opponent.
+  TwoPlayerMode, ///< Human vs. human mode.
+  EasyAiMode   ///< Simplified AI opponent.
 };
 
-/// \brief An enum to represent the winner.
+/// @enum Winner
+/// @brief Enumerates the possible results of a game session.
 enum Winner
 {
-  WinnerPlayer1,
-  WinnerPlayer2,
-  Draw,
-  NoWinnerYet
+  WinnerPlayer1, ///< Player one won the game.
+  WinnerPlayer2, ///< Player two won the game.
+  Draw,          ///< The match ended in a draw.
+  NoWinnerYet    ///< The game is still ongoing.
 };
 
+/// @class TicTacToeWidget
+/// @brief Visual component that renders the grid and coordinates gameplay.
 class TicTacToeWidget : public QWidget
 {
   Q_OBJECT
 
 public:
+  /// @brief Builds the widget and initializes the board controls.
+  /// @param parent Optional parent widget for Qt ownership.
   TicTacToeWidget(QWidget *parent = nullptr);
+  /// @brief Releases resources and owned Qt objects.
   ~TicTacToeWidget() override;
 
-  /// \brief A function that resets the board.
+  /// @brief Resets the board to its initial empty state.
   void resetBoard();
 
-  /// \brief Defines which player has to move.
-  /// \param Player moving.
+  /// @brief Sets which player should move next.
+  /// @param player Identifier of the player that should move.
   void setCurrentPlayer(Player player);
 
-  /// \brief  Getter function where it returns which player has to move.
-  /// \return Returns which player has to move.
+  /// @brief Retrieves the player that should move next.
+  /// @return Player enum describing the current player.
   Player getCurrentPlayer() const;
 
-  /// \brief GameSide
-  /// \return
+  /// @brief Retrieves the configured board side length.
+  /// @return Board dimension in cells.
   int getGameSide() const;
-  /// \brief setGameSide
-  /// \param newGameSide
+  /// @brief Updates the board side length.
+  /// @param newGameSide Requested new board dimension.
   void setGameSide(int newGameSide);
-  /// \brief A function to return the game outcome
-  /// \return
+  /// @brief Retrieves the outcome of the last finished game.
+  /// @return Winner enumeration describing the result.
   Winner getGameOutcome() const;
-  /// \brief a function to set the game outcome message
-  /// \param message
+  /// @brief Stores the textual message describing the game outcome.
+  /// @param message Text presented to the players.
   void setGameOutcomeMessage(const QString &message);
-  /// \brief Resets the containers
+  /// @brief Clears internal containers tracking board state.
   void resetContainers();
 
 signals:
-  /// \brief A signal to signal the end of the game session.
+  /// @brief Emitted when the game session finishes.
   void finishGame();
-  /// \brief A signal to signal that it is the turn of another player.
+  /// @brief Emitted when the current player changes.
   void changePlayer();
-  /// \brief Transmits AI Moves
-  /// \param AI Move
+  /// @brief Announces the move computed by the AI.
+  /// @param move Index representing the board position.
   void sendAiMoves(int move);
-  /// \brief Triggers Easy AI.
+  /// @brief Requests the easy AI to generate a move.
   void triggerEasyAi();
-  /// \brief Triggers AI.
+  /// @brief Requests the regular AI to generate a move.
   void triggerAi();
-  /// \brief Triggers the start of ai move calculation
+  /// @brief Signals that AI move calculation should begin.
   void startAiMoveCalculation();
-  /// \brief Triggers the start of easy ai move calculation
+  /// @brief Signals that easy AI move calculation should begin.
   void startEasyAiMoveCalculation();
 
 public slots:
-  /// \brief A function to manage the restart of the game
+  /// @brief Initiates a new game or restarts the current one.
   void startOrRestartGame();
-  /// \brief Sets the Easy Ai Mode.
+  /// @brief Switches the widget to the easy AI mode.
   void setEasyAiMode();
-  /// \brief Sets the Ai Mode.
+  /// @brief Switches the widget to the standard AI mode.
   void setAiMode();
-  /// \brief Reset to the two player mode.
+  /// @brief Switches the widget to two-player mode.
   void setTwoPlayerMode();
 
 private slots:
-  /// \brief A slot to handle clicks on the board.
-  void handleClicksOnBoard(int);
-  /// \brief A slot to hande the end of the game.
+  /// @brief Handles button clicks on the board.
+  /// @param index Index of the clicked tile.
+  void handleClicksOnBoard(int index);
+  /// @brief Performs cleanup when the game ends.
   void handleEndOfGame();
-  /// \brief Triggers Easy Ai Move Calculation.
+  /// @brief Initiates the move calculation for the easy AI.
   void triggerEasyAiMoveCalculation();
-  /// \brief Triggers Ai Move Calculation.
+  /// @brief Initiates the move calculation for the regular AI.
   void triggerAiMoveCalculation();
-  /// \brief Computers Easy AI move.
+  /// @brief Computes the move for the easy AI opponent.
   void calculateEasyAiMove();
-  /// \brief Computers AI move.
+  /// @brief Computes the move for the regular AI opponent.
   void calculateAiMove();
-  /// \brief A function that transmits the ai opponent move.
-  /// \param Ai Move
+  /// @brief Broadcasts the move chosen by the AI opponent.
+  /// @param move Board index chosen by the AI.
   void transmitAiMove(int move);
 
 private:
-  /// \brief A function which creates the board of the tictactoegame
+  /// @brief Creates the board UI elements and layout.
   void createBoard();
-  /// \brief Determines the Winner of the game.
-  /// \return Returns the result.
-  Winner determineWinner(const QString &, int);
-  /// \brief The game board.
-  QList<QPushButton *> m_Board;
-  /// \brief An object to represent the player.
-  Player m_Player;
-  /// \brief An object to represent the outcome winner.
-  Winner m_Winner;
-  /// \brief An object to represent the outcome winner.
-  int m_GameSide;
-  /// \brief An attribute to store the game outcome message
-  QString m_GameOutcomeMessage;
-  /// \brief Mode Attribute
-  Mode m_Mode;
-  /// \brief A container to store the moves of player 1
-  QList<int> m_Player1Moves;
-  /// \brief A variable to store the last move of player 1
-  int m_Player1LastMove;
-  /// \brief A container to store the moves of the AI opponent
-  QList<int> m_AiOpponentMoves;
+  /// @brief Determines whether the game has a winner.
+  /// @param boardSymbol Symbol used by the player.
+  /// @param move Last move index to evaluate.
+  /// @return Winner enumeration describing the outcome.
+  Winner determineWinner(const QString &boardSymbol, int move);
 
-  QMediaPlayer *m_MediaPlayer;
-  QAudioOutput *m_AudioOutput;
+  QList<QPushButton *> m_Board; ///< Collection of board buttons.
+  Player m_Player;              ///< Player scheduled to move next.
+  Winner m_Winner;              ///< Outcome of the current game.
+  int m_GameSide;               ///< Size of the board side.
+  QString m_GameOutcomeMessage; ///< User-facing message of the game outcome.
+  Mode m_Mode;                  ///< Active gameplay mode.
+  QList<int> m_Player1Moves;    ///< History of moves performed by player one.
+  int m_Player1LastMove;        ///< Last move performed by player one.
+  QList<int> m_AiOpponentMoves; ///< History of moves performed by the AI.
+
+  QMediaPlayer *m_MediaPlayer; ///< Audio/visual feedback for gameplay.
+  QAudioOutput *m_AudioOutput; ///< Output device used by the media player.
 };
+
 #endif // TICTACTOEWIDGET_H
