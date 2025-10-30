@@ -76,8 +76,9 @@ install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION bin
 )
 
-# (Optional) If you want to copy assets, sounds, images, etc.:
-install(FILES resources/sound.wav DESTINATION resources)
+# --- Copy assets, sounds, images, etc.:
+install(DIRECTORY resources/sounds DESTINATION resources)
+install(DIRECTORY resources/video  DESTINATION resources)
 
 # Informative message
 message(STATUS "Configuring ${PROJECT_NAME} with Qt libraries: ${QT_LIBS}")
