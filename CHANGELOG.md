@@ -4,18 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
----
-
-## [Unreleased]
-### 🚧 Planned for v1.2.0
-- Integration of Continuous Integration workflows (build & test automation).
-- Add unit tests for AI logic.
-- Improve documentation with Doxygen.
-- Further UI/UX improvements.
 
 ---
 
-## [v1.1.1] - 2025-10-30
+## [v1.2.0] - 2025-10-30
 ### ✨ Highlights
 - Migrated the project from qmake to CMake, enabling automatic Qt code
   generation (moc/uic/rcc), a predictable install layout, and Windows packaging

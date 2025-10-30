@@ -24,12 +24,12 @@ experience with animations and sound effects.
 
 ## Introductory video
 
-Get a preview of the application's look and feel with the intro clip that
+Get a preview of the application's look and feel with a demonstration clip that
 ships with the repository:
 
-- [Watch the intro video](resources/video/TitleIntro.wmv)
+![Game Demonstration](resources/video/GameDemostration.gif)
 
-If your browser cannot play WMV files directly, download the video and open it
+If your browser cannot play .gif files directly, download the clip and open it
 with any multimedia player that supports the Windows Media Video format.
 
 ## Requirements
