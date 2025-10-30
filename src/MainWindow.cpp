@@ -39,8 +39,8 @@ MainWindow::~MainWindow() { delete m_Ui; }
 
 void MainWindow::setMainTitleMedia()
 {
-  QString path =
-      QCoreApplication::applicationDirPath() + "/../../resources/video/TitleIntro.wmv";
+  QString path = QCoreApplication::applicationDirPath() +
+                 "/../resources/video/TitleIntro.wmv";
   if (!QFile::exists(path))
   {
     return;
