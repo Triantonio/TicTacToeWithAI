@@ -90,17 +90,21 @@ GitHub Actions runs the workflow defined in `.github/workflows/release.yml` to
 produce a ready-to-use Windows build:
 
 1. **Runner setup.** The job executes on `windows-latest`, checks out the
-   repository, pins Python 3.10 to keep the Qt installer tooling compatible,
-   and sets up the Microsoft Visual C++ build environment. It then installs Qt
-   5.15.2 for the `win64_msvc2019_64` toolchain using the defaults provided by
-   the Qt online installer, which already bundle the multimedia and tooling
-   components the project depends on.
-2. **Configure and build.** CMake generates a Visual Studio 2022 project for a
-   64-bit Release build and compiles it, producing the `TicTacToeWithAI.exe`
-   executable inside the temporary build directory.
-3. **Install step.** `cmake --install` copies the executable and resource
-   directories (such as the sound effects) to an `install` folder so that the
-   layout matches what end users need.
+   repository, pins Python 3.10 to keep the Qt installer tooling compatible, and
+   installs Qt 5.15.2 with the optional modules required by the application
+   (`qtmultimedia` for audio/video support and `qttools` for `windeployqt`). It
+   also installs Ninja, the fast build tool used by CMake on Windows runners.
+   installs Qt 5.15.2 with the modules required by the application (`qtbase`,
+   `qtmultimedia`, and `qttools`). It also installs Ninja, the fast build tool
+   used by CMake on Windows runners.
+   repository, and installs Qt 5.15.2 with the modules required by the
+   application (`qtbase`, `qtmultimedia`, and `qttools`). It also installs Ninja,
+   the fast build tool used by CMake on Windows runners.
+2. **Configure and build.** CMake configures the project in Release mode and
+   compiles it, generating the `TicTacToeWithAI.exe` executable inside the
+   temporary build directory.
+3. **Install step.** `cmake --install` copies the executable and resources to an
+   `install` folder so that the layout matches what end users need.
 4. **Bundle Qt dependencies.** The workflow invokes `windeployqt` on the
    executable to gather all the Qt DLLs and plugins required to run the
    application outside the development environment.
