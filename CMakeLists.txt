@@ -77,7 +77,7 @@ install(TARGETS ${PROJECT_NAME}
 )
 
 # (Optional) If you want to copy assets, sounds, images, etc.:
-install(FILES resources/sound.wav DESTINATION resources)
+install(DIRECTORY resources/sounds DESTINATION resources)
 
 # Informative message
 message(STATUS "Configuring ${PROJECT_NAME} with Qt libraries: ${QT_LIBS}")

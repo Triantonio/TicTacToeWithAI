@@ -79,9 +79,38 @@ model:
   completed.
 - **Promotion to production:** when the code in `develop` is stable, open a pull
   request from `develop` into `main`, obtain the mandatory approval, and merge.
-  Optionally tag the merge commit to mark the release.
+Optionally tag the merge commit to mark the release.
 
 ![Gitflow branching model](https://nvie.com/img/git-model@2x.png)
+
+## Automated Windows release workflow
+
+When you create a Git tag whose name starts with `v` (for example, `v1.0.0`),
+GitHub Actions runs the workflow defined in `.github/workflows/release.yml` to
+produce a ready-to-use Windows build:
+
+1. **Runner setup.** The job executes on `windows-latest`, checks out the
+   repository, pins Python 3.10 to keep the Qt installer tooling compatible,
+   and sets up the Microsoft Visual C++ build environment. It then installs Qt
+   5.15.2 for the `win64_msvc2019_64` toolchain using the defaults provided by
+   the Qt online installer, which already bundle the multimedia and tooling
+   components the project depends on.
+2. **Configure and build.** CMake generates a Visual Studio 2022 project for a
+   64-bit Release build and compiles it, producing the `TicTacToeWithAI.exe`
+   executable inside the temporary build directory.
+3. **Install step.** `cmake --install` copies the executable and resource
+   directories (such as the sound effects) to an `install` folder so that the
+   layout matches what end users need.
+4. **Bundle Qt dependencies.** The workflow invokes `windeployqt` on the
+   executable to gather all the Qt DLLs and plugins required to run the
+   application outside the development environment.
+5. **Package and publish.** The contents of the `install` directory are zipped
+   into `TicTacToeWithAI-<tag>-windows.zip`. The archive is uploaded both as a
+   workflow artifact and as an asset attached to the tag's GitHub Release, so
+   you can download the executable without building it locally.
+
+You can adjust the workflow (for example, to add more Qt modules or include
+additional packaging steps) by editing `.github/workflows/release.yml`.
 
 ## Generate documentation (optional)
 
