@@ -15,6 +15,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [v1.1.1] - 2025-10-30
+### ✨ Highlights
+- Migrated the project from qmake to CMake, enabling automatic Qt code
+  generation (moc/uic/rcc), a predictable install layout, and Windows packaging
+  via `windeployqt`.
+- Reorganized headers and runtime assets into dedicated `include/` and
+  `resources/` directories and added application icons for a polished desktop
+  experience.
+- Bundled the introductory video with release artifacts so the multimedia intro
+  plays out-of-the-box on fresh installations.
+
+### 📦 Continuous Delivery
+- Added a Windows release workflow that compiles the app on GitHub Actions,
+  collects Qt dependencies, and publishes a ready-to-use ZIP archive whenever a
+  version tag is created.
+- Documented the Gitflow process, branch protection requirements, and release
+  automation so contributors understand how to promote builds to production.
+
+### 📚 Documentation
+- Expanded the README with the intro video link, developer resources, and
+  guidance on building and packaging the project.
+- Introduced a full Doxygen configuration and richer inline comments so the API
+  reference can be generated directly from the source tree.
+
+---
+
 ## [v1.1.0] - 2025-09-10
 ### ✨ New Features
 - **AI Opponent Added:**

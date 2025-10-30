@@ -18,6 +18,19 @@ experience with animations and sound effects.
   each match.
 - **Multimedia feedback** with sounds for moves and victories, plus an
   introductory video displayed in the main window whenever the board is idle.
+- **Polished desktop integration** thanks to dedicated icon resources and a
+  reorganized asset pipeline that keeps images, sounds, and videos bundled with
+  the executable.
+
+## Introductory video
+
+Get a preview of the application's look and feel with the intro clip that
+ships with the repository:
+
+- [Watch the intro video](resources/video/TitleIntro.wmv)
+
+If your browser cannot play WMV files directly, download the video and open it
+with any multimedia player that supports the Windows Media Video format.
 
 ## Requirements
 
@@ -46,7 +59,14 @@ sudo apt install qtbase5-dev qtmultimedia5-dev qttools5-dev-tools build-essentia
    cmake --build build
    ```
 
-3. Launch the resulting application:
+3. (Optional, but recommended for Release builds) Install the compiled
+   application so that the runtime directory mirrors the packaged layout:
+
+   ```bash
+   cmake --install build
+   ```
+
+4. Launch the resulting application:
 
    ```bash
    ./build/TicTacToeWithAI
@@ -115,6 +135,17 @@ produce a ready-to-use Windows build:
 
 You can adjust the workflow (for example, to add more Qt modules or include
 additional packaging steps) by editing `.github/workflows/release.yml`.
+
+## Developer resources
+
+- The new `include/` directory exposes public headers so other components can
+  depend on the game's API without navigating the implementation sources.
+- `doc/doxygen/Doxyfile` configures Doxygen to generate browsable API
+  documentation. Run it after building to refresh the HTML pages referenced in
+  the repository documentation.
+- All runtime assets now live under `resources/`, simplifying Qt resource
+  management and making it easier to bundle everything with release builds or
+  installers.
 
 ## Generate documentation (optional)
 
