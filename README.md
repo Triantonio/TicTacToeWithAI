@@ -90,6 +90,13 @@ GitHub Actions runs the workflow defined in `.github/workflows/release.yml` to
 produce a ready-to-use Windows build:
 
 1. **Runner setup.** The job executes on `windows-latest`, checks out the
+   repository, pins Python 3.10 to keep the Qt installer tooling compatible, and
+   installs Qt 5.15.2 with the optional modules required by the application
+   (`qtmultimedia` for audio/video support and `qttools` for `windeployqt`). It
+   also installs Ninja, the fast build tool used by CMake on Windows runners.
+   installs Qt 5.15.2 with the modules required by the application (`qtbase`,
+   `qtmultimedia`, and `qttools`). It also installs Ninja, the fast build tool
+   used by CMake on Windows runners.
    repository, and installs Qt 5.15.2 with the modules required by the
    application (`qtbase`, `qtmultimedia`, and `qttools`). It also installs Ninja,
    the fast build tool used by CMake on Windows runners.
