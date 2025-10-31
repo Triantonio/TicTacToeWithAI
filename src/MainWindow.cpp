@@ -5,6 +5,9 @@
 #include "ui_MainWindow.h"
 #include <QFile>
 
+#if defined(_MSC_VER) && (defined(QT_DEBUG) || defined(_DEBUG))
+#include "Infrastructure/SetDebugNew.h"
+#endif
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), m_Ui(new Ui::MainWindow),
       m_GameConfiguration(GameConfiguration::getInstance())

@@ -24,12 +24,15 @@ set(PROJECT_SOURCES
     src/MainWindow.cpp
     src/main.cpp
     src/tictactoewidget.cpp
+    src/Infrastructure/ReportingHook.cpp
 )
 
 set(PROJECT_HEADERS
     include/GameConfiguration.hpp
     include/MainWindow.hpp
     include/tictactoewidget.h
+    include/Infrastructure/SetDebugNew.h
+    include/Infrastructure/ReportingHook.h
 )
 
 set(PROJECT_FORMS

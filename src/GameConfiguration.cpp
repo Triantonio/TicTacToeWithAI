@@ -6,6 +6,9 @@
 #include "ui_GameConfiguration.h"
 #include <QPushButton>
 
+#if defined(_MSC_VER) && (defined(QT_DEBUG) || defined(_DEBUG))
+#include "Infrastructure/SetDebugNew.h"
+#endif
 GameConfiguration::GameConfiguration(QWidget *parent)
     : QDialog(parent), m_Ui(new Ui::GameConfiguration)
 {
