@@ -24,8 +24,9 @@ struct SideRange
 /// @brief Stores user-facing strings used by the AI configurations.
 struct SpecialData
 {
-  static constexpr const char *aiName = "Mister AI";      ///< Default AI name.
-  static constexpr const char *aiEasyName = "Mister Easy AI"; ///< Easy AI alias.
+  static constexpr const char *aiName = "Mister AI"; ///< Default AI name.
+  static constexpr const char *aiEasyName =
+      "Mister Easy AI"; ///< Easy AI alias.
 };
 
 /// @class GameConfiguration
@@ -94,8 +95,6 @@ private slots:
 
 private:
   Ui::GameConfiguration *m_Ui; ///< Generated UI form pointer.
-
-  static GameConfiguration *gameConfiguration; ///< Singleton instance.
 };
 
 #endif // GAMECONFIGURATION_HPP

@@ -104,16 +104,10 @@ Mode GameConfiguration::getMode() const
 }
 */
 
-// Initialization of the pointer to the single instance
-GameConfiguration *GameConfiguration::gameConfiguration = nullptr;
-
 GameConfiguration *GameConfiguration::getInstance()
 {
-  if (gameConfiguration == nullptr)
-  {
-    gameConfiguration = new GameConfiguration;
-  }
-  return gameConfiguration;
+  static GameConfiguration instance;
+  return &instance;
 }
 
 void GameConfiguration::resetConfiguration()
