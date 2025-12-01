@@ -5,6 +5,10 @@
 #include <QDebug>
 #include <QLabel>
 
+#if defined(_MSC_VER) && (defined(QT_DEBUG) || defined(_DEBUG))
+#include "Infrastructure/SetDebugNew.h"
+#endif
+
 TicTacToeWidget::TicTacToeWidget(QWidget *parent)
     : QWidget(parent), m_Player(Player::Player1), m_Winner(Winner::NoWinnerYet),
       m_Mode(Mode::TwoPlayerMode)

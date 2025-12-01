@@ -6,6 +6,9 @@
 #include "ui_GameConfiguration.h"
 #include <QPushButton>
 
+#if defined(_MSC_VER) && (defined(QT_DEBUG) || defined(_DEBUG))
+#include "Infrastructure/SetDebugNew.h"
+#endif
 GameConfiguration::GameConfiguration(QWidget *parent)
     : QDialog(parent), m_Ui(new Ui::GameConfiguration)
 {
@@ -101,16 +104,10 @@ Mode GameConfiguration::getMode() const
 }
 */
 
-// Initialization of the pointer to the single instance
-GameConfiguration *GameConfiguration::gameConfiguration = nullptr;
-
 GameConfiguration *GameConfiguration::getInstance()
 {
-  if (gameConfiguration == nullptr)
-  {
-    gameConfiguration = new GameConfiguration;
-  }
-  return gameConfiguration;
+  static GameConfiguration instance;
+  return &instance;
 }
 
 void GameConfiguration::resetConfiguration()
