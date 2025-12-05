@@ -40,6 +40,24 @@ void TicTacToeWidget::resetBoard()
   }
 }
 
+void TicTacToeWidget::applyMoveStyling(QPushButton *button,
+                                       const QString &symbol,
+                                       const QString &color,
+                                       const QString &background,
+                                       const QUrl &sound)
+{
+  if (m_MediaPlayer)
+  {
+    m_MediaPlayer->setMedia(sound);
+    m_MediaPlayer->play();
+  }
+
+  button->setText(symbol);
+  button->setStyleSheet(QString("QPushButton{color: %1; background: %2;}")
+                            .arg(color, background));
+  button->setDisabled(true);
+}
+
 void TicTacToeWidget::setCurrentPlayer(Player player)
 {
   m_Player = player;
@@ -51,6 +69,48 @@ void TicTacToeWidget::setCurrentPlayer(Player player)
   {
     emit triggerEasyAi();
   }
+}
+
+void TicTacToeWidget::togglePlayer()
+{
+  if (m_Player == Player::Player1)
+  {
+    setCurrentPlayer(Player::Player2);
+    emit changePlayer();
+  }
+  else if (m_Player == Player::Player2)
+  {
+    setCurrentPlayer(Player::Player1);
+    emit changePlayer();
+  }
+}
+
+void TicTacToeWidget::playOutcomeSound(Winner winner)
+{
+  if (!m_MediaPlayer)
+  {
+    return;
+  }
+
+  QUrl sound;
+
+  switch (winner)
+  {
+  case Winner::WinnerPlayer1:
+    sound = QUrl("qrc:/sounds/Player1Win.mp3");
+    break;
+  case Winner::WinnerPlayer2:
+    sound = QUrl("qrc:/sounds/Player2Win.mp3");
+    break;
+  case Winner::Draw:
+    sound = QUrl("qrc:/sounds/Draw.mp3");
+    break;
+  default:
+    return;
+  }
+
+  m_MediaPlayer->setMedia(sound);
+  m_MediaPlayer->play();
 }
 
 Player TicTacToeWidget::getCurrentPlayer() const { return m_Player; }
@@ -70,69 +130,26 @@ void TicTacToeWidget::handleClicksOnBoard(int buttonIndex)
 
   if (m_Player == Player::Player1)
   {
-    // Play the sound for player 1 move
-    // QT6
-    /*m_MediaPlayer->setSource(QUrl("qrc:/sounds/Player1Move.mp3"));*/
-    m_MediaPlayer->setMedia(QUrl("qrc:/sounds/Player1Move.mp3"));
-    m_MediaPlayer->play();
-    // record the move of player 1
     m_Player1LastMove = buttonIndex;
     symbol = MetaData::player1Symbol;
-    button->setText(symbol);
-    button->setStyleSheet(QString("QPushButton{color: ") +
-                          MetaData::player1Colour +
-                          "; background: lightyellow;}");
-    button->setDisabled(true);
+    applyMoveStyling(button, symbol, MetaData::player1Colour,
+                     "lightyellow", QUrl("qrc:/sounds/Player1Move.mp3"));
   }
   else if (m_Player == Player::Player2)
   {
-    // Play the sound for player 2 move
-    /*m_MediaPlayer->setSource(QUrl("qrc:/sounds/Player2Move.mp3"));*/
-    m_MediaPlayer->setMedia(QUrl("qrc:/sounds/Player2Move.mp3"));
-    m_MediaPlayer->play();
-    // set the move of player 2
     symbol = MetaData::player2Symbol;
-    button->setText(symbol);
-    button->setStyleSheet(QString("QPushButton{color: ") +
-                          MetaData::player2Colour +
-                          "; background: lightgreen;}");
-    button->setDisabled(true);
+    applyMoveStyling(button, symbol, MetaData::player2Colour,
+                     "lightgreen", QUrl("qrc:/sounds/Player2Move.mp3"));
   }
 
   m_Winner = determineWinner(symbol, buttonIndex);
   if (m_Winner == Winner::NoWinnerYet)
   {
-    if (m_Player == Player::Player1)
-    {
-      setCurrentPlayer(Player::Player2);
-      emit changePlayer();
-    }
-    else if (m_Player == Player::Player2)
-    {
-      setCurrentPlayer(Player::Player1);
-      emit changePlayer();
-    }
+    togglePlayer();
   }
   else
   {
-    if (m_Winner == Winner::WinnerPlayer1)
-    {
-      // m_MediaPlayer->setSource(QUrl("qrc:/sounds/Player1Win.mp3"));
-      m_MediaPlayer->setMedia(QUrl("qrc:/sounds/Player1Win.mp3"));
-      m_MediaPlayer->play();
-    }
-    else if (m_Winner == Winner::WinnerPlayer2)
-    {
-      // m_MediaPlayer->setSource(QUrl("qrc:/sounds/Player2Win.mp3"));
-      m_MediaPlayer->setMedia(QUrl("qrc:/sounds/Player2Win.mp3"));
-      m_MediaPlayer->play();
-    }
-    else if (m_Winner == Winner ::Draw)
-    {
-      // m_MediaPlayer->setSource(QUrl("qrc:/sounds/Draw.mp3"));
-      m_MediaPlayer->setMedia(QUrl("qrc:/sounds/Draw.mp3"));
-      m_MediaPlayer->play();
-    }
+    playOutcomeSound(m_Winner);
 
     this->setDisabled(true);
     QTimer::singleShot(MetaData::FREEZETIME, this, SIGNAL(finishGame()));
