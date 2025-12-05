@@ -11,6 +11,7 @@
 #include <QPushButton>
 #include <QSignalMapper>
 #include <QTimer>
+#include <QUrl>
 #include <QWidget>
 #include <memory>
 #include <stdlib.h>
@@ -152,6 +153,20 @@ private:
   /// @param move Last move index to evaluate.
   /// @return Winner enumeration describing the outcome.
   Winner determineWinner(const QString &boardSymbol, int move);
+  /// @brief Switches to the next player and notifies listeners.
+  void togglePlayer();
+  /// @brief Plays the sound associated with a finished game outcome.
+  /// @param winner The detected game result.
+  void playOutcomeSound(Winner winner);
+  /// @brief Applies consistent styling and audio feedback to a move.
+  /// @param button Button that was activated by the player.
+  /// @param symbol Symbol to render on the button.
+  /// @param color Foreground color for the text.
+  /// @param background Background color for the tile.
+  /// @param sound Url of the sound effect to play.
+  void applyMoveStyling(QPushButton *button, const QString &symbol,
+                       const QString &color, const QString &background,
+                       const QUrl &sound);
 
   QList<QPushButton *> m_Board; ///< Collection of board buttons.
   Player m_Player;              ///< Player scheduled to move next.
