@@ -167,6 +167,28 @@ private:
   void applyMoveStyling(QPushButton *button, const QString &symbol,
                        const QString &color, const QString &background,
                        const QUrl &sound);
+  /// @brief Clears the current layout and board widgets.
+  void clearCurrentLayout();
+
+  struct OutcomeColors
+  {
+    QString labelStyle;
+    QString buttonStyle;
+  };
+
+  /// @brief Retrieves the colors associated with a game outcome.
+  /// @param winner Outcome of the game.
+  /// @return Styling configuration for labels and buttons.
+  OutcomeColors outcomeColorsFor(Winner winner) const;
+
+  /// @brief Builds the label shown at the end of the game.
+  /// @param message Message to display.
+  /// @param styleSheet Style to apply to the label.
+  QLabel *createOutcomeLabel(const QString &message, const QString &styleSheet);
+
+  /// @brief Builds the restart button shown at the end of the game.
+  /// @param styleSheet Style to apply to the button.
+  QPushButton *createOutcomeButton(const QString &styleSheet);
 
   QList<QPushButton *> m_Board; ///< Collection of board buttons.
   Player m_Player;              ///< Player scheduled to move next.

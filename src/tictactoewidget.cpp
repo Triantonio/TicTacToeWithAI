@@ -58,6 +58,65 @@ void TicTacToeWidget::applyMoveStyling(QPushButton *button,
   button->setDisabled(true);
 }
 
+void TicTacToeWidget::clearCurrentLayout()
+{
+  QLayout *layout = this->layout();
+  QLayoutItem *layoutItem = nullptr;
+
+  while (layout != nullptr && (layoutItem = layout->takeAt(0)) != nullptr)
+  {
+    delete layoutItem->widget();
+    delete layoutItem;
+  }
+
+  delete layout;
+  m_Board.clear();
+}
+
+TicTacToeWidget::OutcomeColors TicTacToeWidget::outcomeColorsFor(Winner winner) const
+{
+  auto buildStyle = [](const QString &widget, const QString &color) {
+    return QString(" %1{color : %2;}").arg(widget, color);
+  };
+
+  switch (winner)
+  {
+  case Winner::WinnerPlayer1:
+    return {buildStyle("QLabel", MetaData::player1Colour),
+            buildStyle("QPushButton", MetaData::player1Colour)};
+  case Winner::WinnerPlayer2:
+    return {buildStyle("QLabel", MetaData::player2Colour),
+            buildStyle("QPushButton", MetaData::player2Colour)};
+  case Winner::Draw:
+    return {buildStyle("QLabel", MetaData::drawColour),
+            buildStyle("QPushButton", MetaData::drawColour)};
+  default:
+    return {};
+  }
+}
+
+QLabel *TicTacToeWidget::createOutcomeLabel(const QString &message,
+                                            const QString &styleSheet)
+{
+  QLabel *restartLabel = new QLabel(this);
+  restartLabel->setFont(QFont("Liberation Serif", 14, QFont::Bold));
+  restartLabel->setStyleSheet(styleSheet);
+  restartLabel->setText(message);
+
+  return restartLabel;
+}
+
+QPushButton *TicTacToeWidget::createOutcomeButton(const QString &styleSheet)
+{
+  QPushButton *restartButton = new QPushButton("restart", this);
+  restartButton->setMinimumHeight(40);
+  restartButton->setMinimumWidth(100);
+  restartButton->setFont(QFont("Liberation Serif", 14, QFont::Bold));
+  restartButton->setStyleSheet(styleSheet);
+
+  return restartButton;
+}
+
 void TicTacToeWidget::setCurrentPlayer(Player player)
 {
   m_Player = player;
@@ -447,66 +506,16 @@ void TicTacToeWidget::resetContainers()
 
 void TicTacToeWidget::handleEndOfGame()
 {
-  // Emptying of the tictactoe window
-  // Retireve Layout
-  QLayout *layout = this->layout();
-  // Place holder layout item
-  QLayoutItem *layoutItem = nullptr;
-  // Retrieve the layout items, delete their widget and then delete the layout
-  // items 0 1 2 3 4 1 2 3 4 => 0 1 2 3 1 2 3 => 0 1 2
-  while (layout != nullptr && (layoutItem = layout->takeAt(0)) != nullptr)
-  {
-    // delete the widget of the layout item
-    delete layoutItem->widget();
-    // delete the layout item
-    delete layoutItem;
-  }
-  // delete the layout
-  delete layout;
-  // clear the board
-  m_Board.clear();
+  clearCurrentLayout();
 
-  // creation of the layout for the window to display the outcome of the game
+  const OutcomeColors colors = outcomeColorsFor(m_Winner);
+
   QVBoxLayout *verticalLayout = new QVBoxLayout(this);
   verticalLayout->setAlignment(Qt::AlignCenter);
 
-  // label and restar button
-  QLabel *restartLabel = new QLabel(this);
-  QPushButton *restartButton = new QPushButton("restart", this);
+  QLabel *restartLabel = createOutcomeLabel(m_GameOutcomeMessage, colors.labelStyle);
+  QPushButton *restartButton = createOutcomeButton(colors.buttonStyle);
 
-  QString restartLabelColour;
-  QString restartButtonColour;
-  if (m_Winner == Winner::WinnerPlayer1)
-  {
-    restartLabelColour =
-        QString(" QLabel{color : ") + MetaData::player1Colour + ";}";
-    restartButtonColour =
-        QString(" QPushButton{color : ") + MetaData::player1Colour + ";}";
-  }
-  else if (m_Winner == Winner::WinnerPlayer2)
-  {
-    restartLabelColour =
-        QString(" QLabel{color : ") + MetaData::player2Colour + ";}";
-    restartButtonColour =
-        QString(" QPushButton{color : ") + MetaData::player2Colour + ";}";
-  }
-  else if (m_Winner == Winner::Draw)
-  {
-    restartLabelColour =
-        QString(" QLabel{color : ") + MetaData::drawColour + ";}";
-    restartButtonColour =
-        QString(" QPushButton{color : ") + MetaData::drawColour + ";}";
-  }
-
-  // style the button
-  restartButton->setMinimumHeight(40);
-  restartButton->setMinimumWidth(100);
-  restartButton->setFont(QFont("Liberation Serif", 14, QFont::Bold));
-  restartButton->setStyleSheet(restartButtonColour);
-  // style the label
-  restartLabel->setFont(QFont("Liberation Serif", 14, QFont::Bold));
-  restartLabel->setStyleSheet(restartLabelColour);
-  restartLabel->setText(m_GameOutcomeMessage);
   // Adjust the size of the tictactow board for full display of long names.
   this->setMinimumWidth(MetaData::endOfGameWidth);
   //  organize the widgets in the layout
@@ -533,18 +542,7 @@ void TicTacToeWidget::startOrRestartGame()
     resetContainers();
   }
 
-  // empty the tictactoe widget if necessary
-  QLayout *layout = this->layout();
-  QLayoutItem *layoutItem = nullptr;
-
-  while (layout != nullptr && (layoutItem = layout->takeAt(0)) != nullptr)
-  {
-    delete layoutItem->widget();
-    delete layoutItem;
-  }
-
-  delete layout;
-  m_Board.clear();
+  clearCurrentLayout();
 
   // create a new board
   createBoard();
